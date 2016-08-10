@@ -6,6 +6,9 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.1.0'
+
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -14,5 +17,95 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+    }
+}
+
+subprojects { proj ->
+
+    if (proj.name != "example")
+    {
+        proj.afterEvaluate {
+
+            proj.apply plugin: 'com.github.dcendents.android-maven'
+            proj.apply plugin: 'com.jfrog.bintray'
+
+            def gitUrl = "https://github.com/djavan-bertrand/JCVD"
+
+            proj.install {
+                repositories.mavenInstaller {
+                    // This generates POM.xml with proper parameters
+                    pom {
+                        project {
+                            packaging 'aar'
+
+                            // Add your description here
+                            name 'JCVD library: an Awareness API helper'
+
+                            // Set your license
+                            licenses {
+                                license {
+                                    name 'MIT'
+                                    url 'https://github.com/djavan-bertrand/JCVD/LICENSE'
+                                }
+                            }
+                            developers {
+                                developer {
+                                    id 'Sousoum'
+                                    name 'SousoumProd'
+                                    email 'sousoum.prod@gmail.com'
+                                }
+                            }
+                            scm {
+                                connection gitUrl
+                                developerConnection gitUrl
+
+                            }
+                        }
+                    }
+                }
+            }
+
+            proj.bintray {
+                Properties properties = new Properties()
+                properties.load(project.rootProject.file('local.properties').newDataInputStream())
+                user = properties.getProperty('bintray.user')
+                key = properties.getProperty('bintray.apikey')
+                pkg {
+                    repo = 'maven'
+                    name = "com.sousoum:jcvd"
+
+                    licenses = ['MIT']
+                    vcsUrl = gitUrl
+                    version {
+                        name = rootProject.version
+                        desc = 'JCVD library: an Awareness API helper'
+                        vcsTag = rootProject.releaseTag
+                    }
+                }
+                configurations = ['archives']
+            }
+
+            task generateSourcesJar(type: Jar) {
+                from android.sourceSets.main.java.srcDirs
+                classifier 'sources'
+            }
+
+            task generateJavadocs(type: Javadoc) {
+                source = android.sourceSets.main.java.srcDirs
+                classpath += project.files(android.getBootClasspath()
+                        .join(File.pathSeparator))
+                failOnError false
+            }
+
+            task generateJavadocsJar(type: Jar, dependsOn: generateJavadocs) {
+                from generateJavadocs.destinationDir
+                classifier 'javadoc'
+            }
+
+            artifacts {
+                archives generateJavadocsJar
+                archives generateSourcesJar
+            }
+        }
     }
 }
