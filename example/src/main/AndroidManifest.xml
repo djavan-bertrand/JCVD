@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.sousoum.jcvdexample" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.sousoum.jcvdexample.FenceChooserActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.sousoum.jcvdexample.FenceListActivity"
+            android:label="@string/fences_list" >
+        </activity>
+
+        <service
+            android:name="com.sousoum.jcvdexample.CustomTransitionsIntentService"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.awareness.API_KEY"
+            android:value="REPLACE_WITH_YOUR_API_KEY"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="REPLACE_WITH_YOUR_API_KEY"/>
+
+    </application>
+
+</manifest>

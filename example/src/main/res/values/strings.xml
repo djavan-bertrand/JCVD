@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">JCVDExample</string>
+    <string name="add_fence">Choose a location, and an activity, then press the + button</string>
+    <string name="fences_list">Fences list</string>
+    <string name="action_list">List</string>
+    <string name="walking">Walking</string>
+    <string name="running">Running</string>
+    <string name="driving">Driving</string>
+    <string name="bicycling">Bicycling</string>
+    <string name="still">Still</string>
+    <string name="foot">Foot</string>
+</resources>
