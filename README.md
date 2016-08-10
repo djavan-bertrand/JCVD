@@ -32,7 +32,7 @@ Simply add the dependency to the jcvd library in the build.gradle.
 ```
 dependencies {
     // ...
-    compile 'com.sousoum:jcvd:0.0.1'
+    compile 'com.sousoum:jcvd:0.0.2'
 }
 ```
 
@@ -52,7 +52,7 @@ Then add the dependency to the jcvd library in the build.gradle.
 ```
 dependencies {
     // ...
-    compile 'com.github.djavan-bertrand:jcvd:0.0.1'
+    compile 'com.github.djavan-bertrand:JCVD:0.0.2'
 }
 ```
 
