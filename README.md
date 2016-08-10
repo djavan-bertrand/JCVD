@@ -3,7 +3,7 @@
 
 # JCVD
 
-As our friend Jean-Claude Van Damme once said: *"There are a people who are not successful because they are not "**aware**" they aren't attentive to the fact that they exist. Those poor people, they just don't know"*
+As our friend Jean-Claude Van Damme once said:<br/> *"There are a people who are not successful because they are not "**aware**" they aren't attentive to the fact that they exist. Those poor people, they just don't know"*
 
 **So be like JCVD, be aware!**
 
