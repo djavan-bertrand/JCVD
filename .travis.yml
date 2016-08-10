@@ -20,6 +20,11 @@ android:
   licenses:
     - 'android-sdk-license-.+'
 
+before_install:
+  - echo "sdk.dir=$ANDROID_HOME" > local.properties
+  - echo "bintray.apikey=fake_key" >> local.properties
+  - echo "bintray.user=fake_user" >> local.properties
+
 script:
   - echo "Travis branch is $TRAVIS_BRANCH"
   - echo "Travis branch is in pull request $TRAVIS_PULL+REQUEST"
