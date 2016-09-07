@@ -4,7 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/JCVD.iml" filepath="$PROJECT_DIR$/JCVD.iml" />
       <module fileurl="file://$PROJECT_DIR$/example/example.iml" filepath="$PROJECT_DIR$/example/example.iml" />
-      <module fileurl="file://$PROJECT_DIR$/jcvd/lib.iml" filepath="$PROJECT_DIR$/jcvd/lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jcvd/jcvd.iml" filepath="$PROJECT_DIR$/jcvd/jcvd.iml" />
     </modules>
   </component>
 </project>
