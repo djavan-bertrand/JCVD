@@ -1,6 +1,10 @@
 package com.sousoum.jcvd;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.support.annotation.IntDef;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.google.android.gms.awareness.fence.AwarenessFence;
@@ -16,15 +20,17 @@ public class StorableLocationFence extends StorableFence {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({ENTER_TYPE, EXIT_TYPE, IN_TYPE})
-    public @interface TransitionType {}
+    public @interface TransitionType {
+    }
+
     public static final int ENTER_TYPE = 0;
     public static final int EXIT_TYPE = 1;
     public static final int IN_TYPE = 2;
 
-    private double mLatitude;
-    private double mLongitude;
-    private double mRadius;
-    private long mDwellTimeMillis;
+    private final double mLatitude;
+    private final double mLongitude;
+    private final double mRadius;
+    private final long mDwellTimeMillis;
 
     private static final String TRANSITION_TYPE_KEY = "transition";
     private static final String LATITUDE_KEY = "latitude";
@@ -36,7 +42,7 @@ public class StorableLocationFence extends StorableFence {
     private int mTransitionType;
 
     private StorableLocationFence(@TransitionType int transitionType, double latitude,
-                                    double longitude, double radius, long dwellTimeMillis) {
+                                  double longitude, double radius, long dwellTimeMillis) {
         super(Type.LOCATION);
         mTransitionType = transitionType;
         mLatitude = latitude;
@@ -45,17 +51,18 @@ public class StorableLocationFence extends StorableFence {
         mDwellTimeMillis = dwellTimeMillis;
     }
 
-    //TODO: check permission
-    @SuppressWarnings("MissingPermission")
     @Override
-    public AwarenessFence getAwarenessFence() {
-        switch (mTransitionType) {
-            case ENTER_TYPE:
-                return LocationFence.entering(mLatitude, mLongitude, mRadius);
-            case EXIT_TYPE:
-                return LocationFence.exiting(mLatitude, mLongitude, mRadius);
-            case IN_TYPE:
-                return LocationFence.in(mLatitude, mLongitude, mRadius, mDwellTimeMillis);
+    AwarenessFence getAwarenessFence(Context ctx) {
+        if (ActivityCompat.checkSelfPermission(ctx,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            switch (mTransitionType) {
+                case ENTER_TYPE:
+                    return LocationFence.entering(mLatitude, mLongitude, mRadius);
+                case EXIT_TYPE:
+                    return LocationFence.exiting(mLatitude, mLongitude, mRadius);
+                case IN_TYPE:
+                    return LocationFence.in(mLatitude, mLongitude, mRadius, mDwellTimeMillis);
+            }
         }
 
         return null;
@@ -105,9 +112,7 @@ public class StorableLocationFence extends StorableFence {
      * @param radius the radius of the region (in meter)
      * @return a location fence
      */
-    //TODO @RequiresPermission("android.permission.ACCESS_FINE_LOCATION")
     public static StorableLocationFence entering(double latitude, double longitude, double radius) {
-        //noinspection MissingPermission
         return new StorableLocationFence(ENTER_TYPE, latitude, longitude, radius, 0);
     }
 
@@ -118,9 +123,7 @@ public class StorableLocationFence extends StorableFence {
      * @param radius the radius of the region (in meter)
      * @return a location fence
      */
-    //TODO @RequiresPermission("android.permission.ACCESS_FINE_LOCATION")
     public static StorableLocationFence exiting(double latitude, double longitude, double radius) {
-        //noinspection MissingPermission
         return new StorableLocationFence(EXIT_TYPE, latitude, longitude, radius, 0);
     }
 
@@ -133,14 +136,11 @@ public class StorableLocationFence extends StorableFence {
      * @param dwellTimeMillis the minimum time in milli to consider a dwell
      * @return a location fence
      */
-    //TODO @RequiresPermission("android.permission.ACCESS_FINE_LOCATION")
     public static StorableLocationFence in(double latitude, double longitude, double radius,
                                            long dwellTimeMillis) {
-        //noinspection MissingPermission
         return new StorableLocationFence(IN_TYPE, latitude, longitude, radius, dwellTimeMillis);
     }
 
-    //TODO @RequiresPermission("android.permission.ACCESS_FINE_LOCATION")
     static StorableFence jsonToLocationFence(JSONObject jsonObj) {
         try {
             if (jsonObj.getInt(FENCE_TYPE_KEY) == StorableFence.Type.LOCATION.ordinal()) {
@@ -151,13 +151,10 @@ public class StorableLocationFence extends StorableFence {
                 long dwell = jsonObj.getLong(DWELL_KEY);
                 switch (transition) {
                     case StorableLocationFence.ENTER_TYPE:
-                        //noinspection MissingPermission
                         return StorableLocationFence.entering(latitude, longitude, radius);
                     case StorableLocationFence.EXIT_TYPE:
-                        //noinspection MissingPermission
                         return StorableLocationFence.exiting(latitude, longitude, radius);
                     case StorableLocationFence.IN_TYPE:
-                        //noinspection MissingPermission
                         return StorableLocationFence.in(latitude, longitude, radius, dwell);
                     default:
                         Log.e("LocationFence", "not normal");
@@ -170,7 +167,7 @@ public class StorableLocationFence extends StorableFence {
         return null;
     }
 
-    public static JSONObject locationFenceToString(StorableFence fence, JSONObject json) {
+    static JSONObject locationFenceToString(StorableFence fence, JSONObject json) {
         if (fence.getType() == StorableFence.Type.LOCATION) {
             StorableLocationFence locFence = (StorableLocationFence) fence;
             try {

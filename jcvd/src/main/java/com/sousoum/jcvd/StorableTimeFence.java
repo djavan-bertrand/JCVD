@@ -1,5 +1,6 @@
 package com.sousoum.jcvd;
 
+import android.content.Context;
 import android.support.annotation.IntDef;
 
 import com.google.android.gms.awareness.fence.AwarenessFence;
@@ -29,12 +30,12 @@ public class StorableTimeFence extends StorableFence {
     public static final int SUNDAY = 9;
 
     @TimingType
-    private int mTimingType;
+    private final int mTimingType;
 
     private final TimeZone mTimeZone;
 
-    private long mStartTime;
-    private long mStopTime;
+    private final long mStartTime;
+    private final long mStopTime;
 
     private static final String TIMING_TYPE_KEY = "timing_type";
     private static final String TIMEZONE_OFFSET_KEY = "timezone_offset";
@@ -51,10 +52,8 @@ public class StorableTimeFence extends StorableFence {
         mStopTime = stopTime;
     }
 
-    // TODO: check permission
-    @SuppressWarnings("MissingPermission")
     @Override
-    public AwarenessFence getAwarenessFence() {
+    AwarenessFence getAwarenessFence(Context ctx) {
         switch (mTimingType) {
             case ABSOLUTE:
                 return TimeFence.inInterval(mStartTime, mStopTime);

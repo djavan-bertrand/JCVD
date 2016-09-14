@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresPermission;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -68,7 +67,7 @@ public class StorableFenceManager implements
     private static final String SYNCED_STORE = "SYNCED_STORE";
 
     private final Context mContext;
-    private GoogleApiClient mGoogleApiClient;
+    private final GoogleApiClient mGoogleApiClient;
 
     private Listener mListener;
 
@@ -131,24 +130,25 @@ public class StorableFenceManager implements
     /**
      * Add a fence to the store
      * This will also add the fence to the google api client if connected. If not, it will trigger a connection
-     * This call requires that the permission ACCESS_FINE_LOCATION is granted
+     * This call requires that the following granted permissions:
+     *      - ACCESS_FINE_LOCATION if one of the fence is a {@link StorableLocationFence}
+     *      - ACTIVITY_RECOGNITION if one of the fence is a {@link StorableActivityFence}
      * @param storableFence the fence to store
      * @return true if add has been asked, false otherwise. false could be returned if the fence is expired
      */
-    @RequiresPermission("android.permission.ACCESS_FINE_LOCATION")
     public boolean addFence(@NonNull String id, @NonNull StorableFence storableFence, String pendingIntentClassName) {
-        //noinspection MissingPermission
         return addFence(id, storableFence, null, pendingIntentClassName);
     }
 
     /**
      * Add a fence to the store
      * This will also add the fence to the google api client if connected. If not, it will trigger a connection
-     * This call requires that the permission ACCESS_FINE_LOCATION is granted
+     * This call requires that the following granted permissions:
+     *      - ACCESS_FINE_LOCATION if one of the fence is a {@link StorableLocationFence}
+     *      - ACTIVITY_RECOGNITION if one of the fence is a {@link StorableActivityFence}
      * @param storableFence the fence to store
      * @return true if add has been asked, false otherwise. false could be returned if the fence is expired
      */
-    @RequiresPermission("android.permission.ACCESS_FINE_LOCATION")
     public boolean addFence(@NonNull String id, @NonNull StorableFence storableFence,
                             @Nullable HashMap<String, Object> additionalData, String pendingIntentClassName) {
         boolean addedOngoing = false;
@@ -163,7 +163,7 @@ public class StorableFenceManager implements
                 FenceAddStatus addStatus = new FenceAddStatus(storableFence);
 
                 FenceUpdateRequest.Builder requestBuilder = new FenceUpdateRequest.Builder()
-                        .addFence(id, storableFence.getAwarenessFence(),
+                        .addFence(id, storableFence.getAwarenessFence(mContext),
                                 createRequestPendingIntent(pendingIntentClassName));
 
                 Awareness.FenceApi.updateFences(mGoogleApiClient, requestBuilder.build())
@@ -210,7 +210,7 @@ public class StorableFenceManager implements
     /**
      * Ask to synchronize all stored fences to the Google API Client
      */
-    public void synchronizeAllFencesToGoogleApi() {
+    private void synchronizeAllFencesToGoogleApi() {
         Log.i(TAG, "Try to update list of fences");
         if (ContextCompat.checkSelfPermission(mContext,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -222,7 +222,7 @@ public class StorableFenceManager implements
                     // for each fence, add it to the Google API Client
                     for (StorableFence storableFence : storedFences) {
                         FenceUpdateRequest.Builder requestBuilder = new FenceUpdateRequest.Builder()
-                                .addFence(storableFence.getId(), storableFence.getAwarenessFence(),
+                                .addFence(storableFence.getId(), storableFence.getAwarenessFence(mContext),
                                         createRequestPendingIntent(storableFence.getPendingIntentClass()));
 
                         Awareness.FenceApi.updateFences(mGoogleApiClient, requestBuilder.build());
@@ -239,7 +239,7 @@ public class StorableFenceManager implements
                         FenceAddStatus addStatus = new FenceAddStatus(storableFence);
 
                         FenceUpdateRequest.Builder requestBuilder = new FenceUpdateRequest.Builder()
-                                .addFence(storableFence.getId(), storableFence.getAwarenessFence(),
+                                .addFence(storableFence.getId(), storableFence.getAwarenessFence(mContext),
                                         createRequestPendingIntent(storableFence.getPendingIntentClass()));
 
                         Awareness.FenceApi.updateFences(mGoogleApiClient, requestBuilder.build())

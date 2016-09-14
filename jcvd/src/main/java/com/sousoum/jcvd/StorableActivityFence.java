@@ -1,5 +1,6 @@
 package com.sousoum.jcvd;
 
+import android.content.Context;
 import android.support.annotation.IntDef;
 import android.support.annotation.RequiresPermission;
 
@@ -46,10 +47,9 @@ public class StorableActivityFence extends StorableFence {
         mTransitionType = transitionType;
     }
 
-    // TODO: check permission
-    @SuppressWarnings("MissingPermission")
+    @RequiresPermission("com.google.android.gms.permission.ACTIVITY_RECOGNITION")
     @Override
-    public AwarenessFence getAwarenessFence() {
+    public AwarenessFence getAwarenessFence(Context ctx) {
         switch (mTransitionType) {
             case DURING_TYPE:
                 return DetectedActivityFence.during(mActivityTypes);
@@ -89,8 +89,6 @@ public class StorableActivityFence extends StorableFence {
      * @param activityTypes list of activities
      * @return an ActivityFence
      */
-    //TODO @RequiresPermission("com.google.android.gms.permission.ACTIVITY_RECOGNITION")
-    @SuppressWarnings("MissingPermission")
     public static StorableActivityFence starting(@ActivityType int... activityTypes) {
         return new StorableActivityFence(activityTypes, START_TYPE);
     }
@@ -101,8 +99,6 @@ public class StorableActivityFence extends StorableFence {
      * @param activityTypes list of activities
      * @return an ActivityFence
      */
-    //TODO @RequiresPermission("com.google.android.gms.permission.ACTIVITY_RECOGNITION")
-    @SuppressWarnings("MissingPermission")
     public static StorableActivityFence stopping(@ActivityType int... activityTypes) {
         return new StorableActivityFence(activityTypes, STOP_TYPE);
     }
@@ -113,8 +109,6 @@ public class StorableActivityFence extends StorableFence {
      * @param activityTypes list of activities
      * @return an ActivityFence
      */
-    //TODO @RequiresPermission("com.google.android.gms.permission.ACTIVITY_RECOGNITION")
-    @SuppressWarnings("MissingPermission")
     public static StorableActivityFence during(@ActivityType int... activityTypes) {
         return new StorableActivityFence(activityTypes, DURING_TYPE);
     }
@@ -138,7 +132,6 @@ public class StorableActivityFence extends StorableFence {
         return json;
     }
 
-    @RequiresPermission("com.google.android.gms.permission.ACTIVITY_RECOGNITION")
     static StorableFence jsonToActivityFence(JSONObject jsonObj) {
         try {
             if (jsonObj.getInt(FENCE_TYPE_KEY) == StorableFence.Type.ACTIVITY.ordinal()) {

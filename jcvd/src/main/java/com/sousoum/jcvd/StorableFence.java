@@ -1,5 +1,6 @@
 package com.sousoum.jcvd;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -166,22 +167,22 @@ public class StorableFence {
         return mAdditionalData;
     }
 
-    AwarenessFence getAwarenessFence() {
+    AwarenessFence getAwarenessFence(Context ctx) {
         if (mType.equals(Type.META)) {
             if (!mAndFences.isEmpty()) {
                 List<AwarenessFence> awarenessFences = new ArrayList<>();
                 for (StorableFence subFence : mAndFences) {
-                    awarenessFences.add(subFence.getAwarenessFence());
+                    awarenessFences.add(subFence.getAwarenessFence(ctx));
                 }
                 return AwarenessFence.and(awarenessFences);
             } else if (!mOrFences.isEmpty()) {
                 List<AwarenessFence> awarenessFences = new ArrayList<>();
                 for (StorableFence subFence : mOrFences) {
-                    awarenessFences.add(subFence.getAwarenessFence());
+                    awarenessFences.add(subFence.getAwarenessFence(ctx));
                 }
                 return AwarenessFence.or(awarenessFences);
             } else if (mNotFence != null) {
-                return AwarenessFence.not(mNotFence.getAwarenessFence());
+                return AwarenessFence.not(mNotFence.getAwarenessFence(ctx));
             }
         }
         return null;
@@ -325,11 +326,9 @@ public class StorableFence {
                     }
                     break;
                 case LOCATION:
-                    //noinspection MissingPermission
                     fenceToReturn = StorableLocationFence.jsonToLocationFence(jsonObj);
                     break;
                 case ACTIVITY:
-                    //noinspection MissingPermission
                     fenceToReturn = StorableActivityFence.jsonToActivityFence(jsonObj);
                     break;
                 case TIME:
