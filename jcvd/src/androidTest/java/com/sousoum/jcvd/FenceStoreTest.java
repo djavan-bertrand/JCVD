@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.test.mock.MockContext;
 
+import com.google.android.gms.awareness.fence.DetectedActivityFence;
 import com.sousoum.jcvd.mocks.MockSharedPreferences;
 
 import junit.framework.TestCase;
@@ -38,8 +39,8 @@ public class FenceStoreTest extends TestCase {
     @Before
     public void setUp() throws Exception {
         mStore = new FenceStore(mContext, "test");
-        mAct1 = StorableActivityFence.starting(StorableActivityFence.IN_VEHICLE);
-        mAct2 = StorableActivityFence.during(StorableActivityFence.RUNNING);
+        mAct1 = StorableActivityFence.starting(DetectedActivityFence.IN_VEHICLE);
+        mAct2 = StorableActivityFence.during(DetectedActivityFence.RUNNING);
         mLoc1 = StorableLocationFence.entering(2, 3, 30);
         mLoc2 = StorableLocationFence.exiting(3, 4, 40);
         mAnd = StorableFence.and(mAct1, mAct2);

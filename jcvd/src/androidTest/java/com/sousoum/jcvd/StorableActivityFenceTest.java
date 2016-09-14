@@ -1,5 +1,7 @@
 package com.sousoum.jcvd;
 
+import com.google.android.gms.awareness.fence.DetectedActivityFence;
+
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -22,20 +24,20 @@ public class StorableActivityFenceTest extends TestCase {
     @Test
     public void testValues() {
         StorableActivityFence fence = StorableActivityFence.starting(
-                StorableActivityFence.IN_VEHICLE, StorableActivityFence.RUNNING);
-        int[] startActivities = {StorableActivityFence.IN_VEHICLE, StorableActivityFence.RUNNING};
+                DetectedActivityFence.IN_VEHICLE, DetectedActivityFence.RUNNING);
+        int[] startActivities = {DetectedActivityFence.IN_VEHICLE, DetectedActivityFence.RUNNING};
         assertThat(fence.getActivityTypes(), is(startActivities));
         assertThat(fence.getTransitionType(), is(StorableActivityFence.START_TYPE));
 
         fence = StorableActivityFence.stopping(
-                StorableActivityFence.ON_BICYCLE, StorableActivityFence.WALKING);
-        int[] stopActivities = {StorableActivityFence.ON_BICYCLE, StorableActivityFence.WALKING};
+                DetectedActivityFence.ON_BICYCLE, DetectedActivityFence.WALKING);
+        int[] stopActivities = {DetectedActivityFence.ON_BICYCLE, DetectedActivityFence.WALKING};
         assertThat(fence.getActivityTypes(), is(stopActivities));
         assertThat(fence.getTransitionType(), is(StorableActivityFence.STOP_TYPE));
 
         fence = StorableActivityFence.during(
-                StorableActivityFence.ON_FOOT, StorableActivityFence.STILL, StorableActivityFence.UNKNOWN);
-        int[] duringActivities = {StorableActivityFence.ON_FOOT, StorableActivityFence.STILL, StorableActivityFence.UNKNOWN};
+                DetectedActivityFence.ON_FOOT, DetectedActivityFence.STILL, DetectedActivityFence.UNKNOWN);
+        int[] duringActivities = {DetectedActivityFence.ON_FOOT, DetectedActivityFence.STILL, DetectedActivityFence.UNKNOWN};
         assertThat(fence.getActivityTypes(), is(duringActivities));
         assertThat(fence.getTransitionType(), is(StorableActivityFence.DURING_TYPE));
     }
@@ -43,11 +45,11 @@ public class StorableActivityFenceTest extends TestCase {
     @Test
     public void testEquals() {
         StorableActivityFence fence1 = StorableActivityFence.starting(
-                StorableActivityFence.IN_VEHICLE, StorableActivityFence.RUNNING);
+                DetectedActivityFence.IN_VEHICLE, DetectedActivityFence.RUNNING);
         StorableActivityFence fence2 = StorableActivityFence.stopping(
-                StorableActivityFence.ON_BICYCLE, StorableActivityFence.WALKING);
+                DetectedActivityFence.ON_BICYCLE, DetectedActivityFence.WALKING);
         StorableActivityFence fence3 = StorableActivityFence.stopping(
-                StorableActivityFence.ON_BICYCLE, StorableActivityFence.WALKING);
+                DetectedActivityFence.ON_BICYCLE, DetectedActivityFence.WALKING);
 
         assertThat(fence1.equals(fence1), is(true));
         assertThat(fence2.equals(fence3), is(true));

@@ -18,16 +18,11 @@ public class StorableActivityFence extends StorableFence {
 
     // TODO: do not use this enum, use DetectedActivityFence statics
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({IN_VEHICLE, ON_BICYCLE, ON_FOOT, STILL, UNKNOWN, TILTING, WALKING, RUNNING})
+    @IntDef({DetectedActivityFence.IN_VEHICLE, DetectedActivityFence.ON_BICYCLE,
+            DetectedActivityFence.ON_FOOT, DetectedActivityFence.STILL,
+            DetectedActivityFence.UNKNOWN, DetectedActivityFence.TILTING,
+            DetectedActivityFence.WALKING, DetectedActivityFence.RUNNING})
     public @interface ActivityType {}
-    public static final int IN_VEHICLE = 0;
-    public static final int ON_BICYCLE = 1;
-    public static final int ON_FOOT = 2;
-    public static final int STILL = 3;
-    public static final int UNKNOWN = 4;
-    public static final int TILTING = 5;
-    public static final int WALKING = 7;
-    public static final int RUNNING = 8;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({START_TYPE, STOP_TYPE, DURING_TYPE})
@@ -151,33 +146,7 @@ public class StorableActivityFence extends StorableFence {
                 @StorableActivityFence.ActivityType int[] activities = new int[jsonActivities.length()];
                 for(int i = 0; i < jsonActivities.length(); i++) {
                     @StorableActivityFence.ActivityType int activity = jsonActivities.getInt(i);
-                    switch (activity) {
-                        case StorableActivityFence.IN_VEHICLE:
-                            activities[i] = StorableActivityFence.IN_VEHICLE;
-                            break;
-                        case StorableActivityFence.ON_BICYCLE:
-                            activities[i] = StorableActivityFence.ON_BICYCLE;
-                            break;
-                        case StorableActivityFence.ON_FOOT:
-                            activities[i] = StorableActivityFence.ON_FOOT;
-                            break;
-                        case StorableActivityFence.RUNNING:
-                            activities[i] = StorableActivityFence.RUNNING;
-                            break;
-                        case StorableActivityFence.STILL:
-                            activities[i] = StorableActivityFence.STILL;
-                            break;
-                        case StorableActivityFence.TILTING:
-                            activities[i] = StorableActivityFence.TILTING;
-                            break;
-                        case StorableActivityFence.WALKING:
-                            activities[i] = StorableActivityFence.WALKING;
-                            break;
-                        case StorableActivityFence.UNKNOWN:
-                        default:
-                            activities[i] = StorableActivityFence.UNKNOWN;
-                            break;
-                    }
+                    activities[i] = activity;
                 }
                 int transition = jsonObj.getInt(TRANSITION_TYPE_KEY);
                 switch (transition) {

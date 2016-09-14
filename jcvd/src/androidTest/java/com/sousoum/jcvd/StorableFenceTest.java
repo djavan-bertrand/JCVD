@@ -1,5 +1,7 @@
 package com.sousoum.jcvd;
 
+import com.google.android.gms.awareness.fence.DetectedActivityFence;
+
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -34,9 +36,9 @@ public class StorableFenceTest extends TestCase {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        mAct1 = StorableActivityFence.starting(StorableActivityFence.IN_VEHICLE);
+        mAct1 = StorableActivityFence.starting(DetectedActivityFence.IN_VEHICLE);
         mAct1.setPendingIntentClass("className");
-        mAct2 = StorableActivityFence.during(StorableActivityFence.RUNNING);
+        mAct2 = StorableActivityFence.during(DetectedActivityFence.RUNNING);
         mLoc1 = StorableLocationFence.entering(2, 3, 30);
         mLoc1.setId("1");
         mLoc2 = StorableLocationFence.exiting(3, 4, 40);

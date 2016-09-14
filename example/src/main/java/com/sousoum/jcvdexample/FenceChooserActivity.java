@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.awareness.fence.DetectedActivityFence;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -37,7 +38,6 @@ import java.util.UUID;
 public class FenceChooserActivity extends AppCompatActivity implements OnMapReadyCallback, StorableFenceManager.Listener, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener {
 
     private static final String TAG = "FenceChooserActivity";
-    @StorableActivityFence.ActivityType
     private List<Integer> mActivityType;
     private LatLng mLocation;
 
@@ -86,8 +86,9 @@ public class FenceChooserActivity extends AppCompatActivity implements OnMapRead
                         @StorableActivityFence.ActivityType
                         int[] ret = new int[mActivityType.size()];
                         int i = 0;
-                        for (int val : mActivityType)
+                        for (int val : mActivityType) {
                             ret[i++] = val;
+                        }
                         activityFence = StorableActivityFence.during(ret);
                     }
 
@@ -108,7 +109,6 @@ public class FenceChooserActivity extends AppCompatActivity implements OnMapRead
                             Log.e(TAG, "Addition of fence has been refused " + resultFence);
                         }
                     }
-
                 }
             });
         }
@@ -175,61 +175,61 @@ public class FenceChooserActivity extends AppCompatActivity implements OnMapRead
     }
 
     public void onWalkingClicked(View view) {
-        if (mActivityType.contains(StorableActivityFence.WALKING)) {
-            mActivityType.remove(Integer.valueOf(StorableActivityFence.WALKING));
+        if (mActivityType.contains(DetectedActivityFence.WALKING)) {
+            mActivityType.remove(Integer.valueOf(DetectedActivityFence.WALKING));
             view.setBackgroundColor(Color.LTGRAY);
         } else {
-            mActivityType.add(StorableActivityFence.WALKING);
+            mActivityType.add(DetectedActivityFence.WALKING);
             view.setBackgroundColor(Color.WHITE);
         }
     }
 
     public void onRunningClicked(View view) {
-        if (mActivityType.contains(StorableActivityFence.RUNNING)) {
-            mActivityType.remove(Integer.valueOf(StorableActivityFence.RUNNING));
+        if (mActivityType.contains(DetectedActivityFence.RUNNING)) {
+            mActivityType.remove(Integer.valueOf(DetectedActivityFence.RUNNING));
             view.setBackgroundColor(Color.LTGRAY);
         } else {
-            mActivityType.add(StorableActivityFence.RUNNING);
+            mActivityType.add(DetectedActivityFence.RUNNING);
             view.setBackgroundColor(Color.WHITE);
         }
     }
 
     public void onDrivingClicked(View view) {
-        if (mActivityType.contains(StorableActivityFence.IN_VEHICLE)) {
-            mActivityType.remove(Integer.valueOf(StorableActivityFence.IN_VEHICLE));
+        if (mActivityType.contains(DetectedActivityFence.IN_VEHICLE)) {
+            mActivityType.remove(Integer.valueOf(DetectedActivityFence.IN_VEHICLE));
             view.setBackgroundColor(Color.LTGRAY);
         } else {
-            mActivityType.add(StorableActivityFence.IN_VEHICLE);
+            mActivityType.add(DetectedActivityFence.IN_VEHICLE);
             view.setBackgroundColor(Color.WHITE);
         }
     }
 
     public void onBicyclingClicked(View view) {
-        if (mActivityType.contains(StorableActivityFence.ON_BICYCLE)) {
-            mActivityType.remove(Integer.valueOf(StorableActivityFence.ON_BICYCLE));
+        if (mActivityType.contains(DetectedActivityFence.ON_BICYCLE)) {
+            mActivityType.remove(Integer.valueOf(DetectedActivityFence.ON_BICYCLE));
             view.setBackgroundColor(Color.LTGRAY);
         } else {
-            mActivityType.add(StorableActivityFence.ON_BICYCLE);
+            mActivityType.add(DetectedActivityFence.ON_BICYCLE);
             view.setBackgroundColor(Color.WHITE);
         }
     }
 
     public void onStillClicked(View view) {
-        if (mActivityType.contains(StorableActivityFence.STILL)) {
-            mActivityType.remove(Integer.valueOf(StorableActivityFence.STILL));
+        if (mActivityType.contains(DetectedActivityFence.STILL)) {
+            mActivityType.remove(Integer.valueOf(DetectedActivityFence.STILL));
             view.setBackgroundColor(Color.LTGRAY);
         } else {
-            mActivityType.add(StorableActivityFence.STILL);
+            mActivityType.add(DetectedActivityFence.STILL);
             view.setBackgroundColor(Color.WHITE);
         }
     }
 
     public void onFootClicked(View view) {
-        if (mActivityType.contains(StorableActivityFence.ON_FOOT)) {
-            mActivityType.remove(Integer.valueOf(StorableActivityFence.ON_FOOT));
+        if (mActivityType.contains(DetectedActivityFence.ON_FOOT)) {
+            mActivityType.remove(Integer.valueOf(DetectedActivityFence.ON_FOOT));
             view.setBackgroundColor(Color.LTGRAY);
         } else {
-            mActivityType.add(StorableActivityFence.ON_FOOT);
+            mActivityType.add(DetectedActivityFence.ON_FOOT);
             view.setBackgroundColor(Color.WHITE);
         }
     }

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.awareness.fence.DetectedActivityFence;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -138,28 +139,28 @@ public class FenceRecyclerAdapter extends RecyclerView.Adapter<FenceRecyclerAdap
                             str += ", ";
                         }
                         switch (act) {
-                            case StorableActivityFence.IN_VEHICLE:
+                            case DetectedActivityFence.IN_VEHICLE:
                                 str += "IN_VEHICLE";
                                 break;
-                            case StorableActivityFence.ON_BICYCLE:
+                            case DetectedActivityFence.ON_BICYCLE:
                                 str += "ON_BICYCLE";
                                 break;
-                            case StorableActivityFence.ON_FOOT:
+                            case DetectedActivityFence.ON_FOOT:
                                 str += "ON_FOOT";
                                 break;
-                            case StorableActivityFence.RUNNING:
+                            case DetectedActivityFence.RUNNING:
                                 str += "RUNNING";
                                 break;
-                            case StorableActivityFence.STILL:
+                            case DetectedActivityFence.STILL:
                                 str += "STILL";
                                 break;
-                            case StorableActivityFence.TILTING:
+                            case DetectedActivityFence.TILTING:
                                 str += "TILTING";
                                 break;
-                            case StorableActivityFence.WALKING:
+                            case DetectedActivityFence.WALKING:
                                 str += "WALKING";
                                 break;
-                            case StorableActivityFence.UNKNOWN:
+                            case DetectedActivityFence.UNKNOWN:
                             default:
                                 str += "UNKNOWN";
                                 break;
