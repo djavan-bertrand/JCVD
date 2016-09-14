@@ -104,7 +104,9 @@ public class StorableTimeFence extends StorableFence {
         return ((super.equals(other)) &&
                 (mTimingType == fence.getTimingType()) &&
                 ((mTimeZone == null) && (fence.getTimeZone() == null) ||
-                        ((mTimeZone != null) && (mTimeZone.equals(fence.getTimeZone())))) &&
+                        ((mTimeZone != null) && (fence.getTimeZone() != null) &&
+                                (mTimeZone.getDisplayName().equals(fence.getTimeZone().getDisplayName())) &&
+                                (mTimeZone.getID().equals(fence.getTimeZone().getID())))) &&
                 (mStartTime == fence.getStartTime()) &&
                 (mStopTime == fence.getStopTime())
         );

@@ -23,12 +23,15 @@ public class StorableLocationFenceTest extends TestCase {
     @Test
     public void testValues() {
         StorableLocationFence fence = StorableLocationFence.entering(1.0, 2.0, 3.0);
+        assertThat(fence.getType(), Matchers.is(StorableFence.Type.LOCATION));
         assertThat(fence, is(StorableLocationFence.ENTER_TYPE, 1.0, 2.0, 3.0, 0));
 
         fence = StorableLocationFence.exiting(1.0, 2.0, 3.0);
+        assertThat(fence.getType(), Matchers.is(StorableFence.Type.LOCATION));
         assertThat(fence, is(StorableLocationFence.EXIT_TYPE, 1.0, 2.0, 3.0, 0));
 
         fence = StorableLocationFence.in(1.0, 2.0, 3.0, 10);
+        assertThat(fence.getType(), Matchers.is(StorableFence.Type.LOCATION));
         assertThat(fence, is(StorableLocationFence.IN_TYPE, 1.0, 2.0, 3.0, 10));
     }
 

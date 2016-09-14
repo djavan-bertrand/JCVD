@@ -48,6 +48,12 @@ public class StorableFence {
          * It can be casted into a {@link StorableTimeFence}
          */
         TIME,
+
+        /**
+         * Fence is a headphone fence
+         * It can be casted into a {@link StorableHeadphoneFence}
+         */
+        HEADPHONE,
     }
 
     @NonNull
@@ -334,6 +340,9 @@ public class StorableFence {
                 case TIME:
                     fenceToReturn = StorableTimeFence.jsonToTimeFence(jsonObj);
                     break;
+                case HEADPHONE:
+                    fenceToReturn = StorableHeadphoneFence.jsonToHeadphoneFence(jsonObj);
+                    break;
             }
             if (fenceToReturn!= null && jsonObj.has(FENCE_ID_KEY)) {
                 fenceToReturn.mId = jsonObj.getString(FENCE_ID_KEY);
@@ -433,6 +442,9 @@ public class StorableFence {
                     break;
                 case TIME:
                     json = StorableTimeFence.timeFenceToString(fence, json);
+                    break;
+                case HEADPHONE:
+                    json = StorableHeadphoneFence.headphoneFenceToString(fence, json);
                     break;
             }
         }

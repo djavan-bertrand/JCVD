@@ -4,6 +4,7 @@ import com.google.android.gms.awareness.fence.DetectedActivityFence;
 
 import junit.framework.TestCase;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,18 +27,21 @@ public class StorableActivityFenceTest extends TestCase {
         StorableActivityFence fence = StorableActivityFence.starting(
                 DetectedActivityFence.IN_VEHICLE, DetectedActivityFence.RUNNING);
         int[] startActivities = {DetectedActivityFence.IN_VEHICLE, DetectedActivityFence.RUNNING};
+        assertThat(fence.getType(), Matchers.is(StorableFence.Type.ACTIVITY));
         assertThat(fence.getActivityTypes(), is(startActivities));
         assertThat(fence.getTransitionType(), is(StorableActivityFence.START_TYPE));
 
         fence = StorableActivityFence.stopping(
                 DetectedActivityFence.ON_BICYCLE, DetectedActivityFence.WALKING);
         int[] stopActivities = {DetectedActivityFence.ON_BICYCLE, DetectedActivityFence.WALKING};
+        assertThat(fence.getType(), Matchers.is(StorableFence.Type.ACTIVITY));
         assertThat(fence.getActivityTypes(), is(stopActivities));
         assertThat(fence.getTransitionType(), is(StorableActivityFence.STOP_TYPE));
 
         fence = StorableActivityFence.during(
                 DetectedActivityFence.ON_FOOT, DetectedActivityFence.STILL, DetectedActivityFence.UNKNOWN);
         int[] duringActivities = {DetectedActivityFence.ON_FOOT, DetectedActivityFence.STILL, DetectedActivityFence.UNKNOWN};
+        assertThat(fence.getType(), Matchers.is(StorableFence.Type.ACTIVITY));
         assertThat(fence.getActivityTypes(), is(duringActivities));
         assertThat(fence.getTransitionType(), is(StorableActivityFence.DURING_TYPE));
     }

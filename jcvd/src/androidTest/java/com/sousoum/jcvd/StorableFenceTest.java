@@ -1,14 +1,17 @@
 package com.sousoum.jcvd;
 
 import com.google.android.gms.awareness.fence.DetectedActivityFence;
+import com.google.android.gms.awareness.state.HeadphoneState;
 
 import junit.framework.TestCase;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import static com.sousoum.jcvd.matchers.StorableFenceMatcher.isAnd;
 import static com.sousoum.jcvd.matchers.StorableFenceMatcher.isNot;
@@ -32,6 +35,10 @@ public class StorableFenceTest extends TestCase {
 
     private StorableLocationFence mLoc2;
 
+    private StorableHeadphoneFence mHead1;
+
+    private StorableTimeFence mTime1;
+
     @Before
     @Override
     public void setUp() throws Exception {
@@ -42,12 +49,16 @@ public class StorableFenceTest extends TestCase {
         mLoc1 = StorableLocationFence.entering(2, 3, 30);
         mLoc1.setId("1");
         mLoc2 = StorableLocationFence.exiting(3, 4, 40);
+        mHead1 = StorableHeadphoneFence.during(HeadphoneState.PLUGGED_IN);
+        mTime1 = StorableTimeFence.inFridayInterval(TimeZone.getDefault(), 20, 20000);
+
     }
 
     @Test
     public void testAnd() {
         // test with two activity fence
         StorableFence andFence = StorableFence.and(mAct1, mAct2);
+        assertThat(andFence.getType(), Matchers.is(StorableFence.Type.META));
         assertThat(andFence, allOf(
                 notNullValue(),
                 isAnd(mAct1, mAct2),
@@ -56,6 +67,7 @@ public class StorableFenceTest extends TestCase {
 
         // test with different fence types
         andFence = StorableFence.and(mAct1, mLoc1, mLoc2);
+        assertThat(andFence.getType(), Matchers.is(StorableFence.Type.META));
         assertThat(andFence, allOf(
                 notNullValue(),
                 isAnd(mAct1, mLoc1, mLoc2),
@@ -67,6 +79,7 @@ public class StorableFenceTest extends TestCase {
     public void testOr() {
         // test with two location fence
         StorableFence orFence = StorableFence.or(mLoc1, mLoc2);
+        assertThat(orFence.getType(), Matchers.is(StorableFence.Type.META));
         assertThat(orFence, allOf(
                 notNullValue(),
                 isOr(mLoc1, mLoc2),
@@ -75,6 +88,7 @@ public class StorableFenceTest extends TestCase {
 
         // test with different fence types
         orFence = StorableFence.or(mAct1, mLoc1, mLoc2);
+        assertThat(orFence.getType(), Matchers.is(StorableFence.Type.META));
         assertThat(orFence, allOf(
                 notNullValue(),
                 isOr(mAct1, mLoc1, mLoc2),
@@ -86,6 +100,7 @@ public class StorableFenceTest extends TestCase {
     public void testNot() {
         // test with two location fence
         StorableFence notFence = StorableFence.not(mLoc1);
+        assertThat(notFence.getType(), Matchers.is(StorableFence.Type.META));
         assertThat(notFence, allOf(
                 notNullValue(),
                 isNot(mLoc1),
@@ -94,12 +109,13 @@ public class StorableFenceTest extends TestCase {
 
         // test the negation of a meta
         StorableFence notFence2 = StorableFence.not(notFence);
+        assertThat(notFence.getType(), Matchers.is(StorableFence.Type.META));
         assertThat(notFence2, allOf(
                 notNullValue(),
                 isNot(notFence),
                 isNotAnd(),
                 isNotOr()));
-        // also check that it has not changed to negated fence
+        // also check that it has not changed to negate the fence
         assertThat(notFence2.getNotFence(), allOf(
                 notNullValue(),
                 isNot(mLoc1),
@@ -109,9 +125,9 @@ public class StorableFenceTest extends TestCase {
 
     @Test
     public void testStringConvert() {
-        StorableFence orFence = StorableFence.or(mLoc1, mLoc2);
+        StorableFence orFence = StorableFence.or(mLoc1, mLoc2, mHead1);
         StorableFence notFence = StorableFence.not(mAct1);
-        StorableFence andFence = StorableFence.and(orFence, notFence, mAct2);
+        StorableFence andFence = StorableFence.and(orFence, notFence, mAct2, mTime1);
         HashMap<String, Object> additionalData = new HashMap<>();
         additionalData.put("long", Long.MAX_VALUE);
         additionalData.put("int", Integer.MIN_VALUE);
