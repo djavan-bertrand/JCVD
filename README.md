@@ -32,7 +32,7 @@ Simply add the dependency to the jcvd library in the build.gradle.
 ```
 dependencies {
     // ...
-    compile 'com.sousoum:jcvd:0.0.2'
+    compile 'com.sousoum:jcvd:1.0.0'
 }
 ```
 
@@ -52,7 +52,7 @@ Then add the dependency to the jcvd library in the build.gradle.
 ```
 dependencies {
     // ...
-    compile 'com.github.djavan-bertrand:JCVD:0.0.2'
+    compile 'com.github.djavan-bertrand:JCVD:1.0.0'
 }
 ```
 
@@ -138,6 +138,24 @@ or
 StorableTimeFence.inMondayInterval((TimeZone)timeZone, (long)startTimeOfDayMillis, (long)stopTimeOfDayMillis);
 ```
 
+#### Headphone fence
+
+The StorableHeadphoneFence is representing a [HeadphoneFence](https://developers.google.com/android/reference/com/google/android/gms/awareness/fence/HeadphoneFence) in the Awareness API.
+
+You can create it with:
+
+```
+StorableHeadphoneFence.during(state);
+```
+or
+```
+StorableHeadphoneFence.pluggingIn();
+```
+or
+```
+StorableHeadphoneFence.unplugging();
+```
+
 #### Meta fence
 
 You can combine fences between them to create complex meta fences. 
@@ -160,18 +178,16 @@ StorableFence.not((StorableFence)fence);
 
 Once the fence is created, you'll have to add it to the StorableFenceManager. This action will also add it, as soon as possible, to the Play Services through the Awareness API.
 
-Before calling addFence, you should check if you the permission `ACCESS_FINE_LOCATION` is granted.
+**Before calling addFence with a StorableLocationFence or a META fence containing a StorableLocationFence, you should check if you the permission `ACCESS_FINE_LOCATION` is granted.**
 
 ```
-addedOnGoing = mGeofenceManager.addFence(uniqueId, resultFence, additionalData, receiverClassName());
+mGeofenceManager.addFence(uniqueId, resultFence, additionalData, receiverClassName);
 ```
 
 *receiverClassName* is the name of the class that will be called when the fence is triggered by Android. It should inherits from IntentService.<br/>
 *additionalData* is an HashMap<String, Object> which provides additional data. The values should be of the following types: String, Long, Integer, Double or Boolean.
 
-*addedOnGoing* is the immediate result of the call. It is true if add has been asked, false otherwise.
-
-After this call, if *addedOnGoing* is true, the *fenceAddStatus* callback will be called to inform you about the status of the Fence.
+After this call, the *fenceAddStatus* callback will be called to inform you about the status of the Fence.
 
 ## Run the example
 
@@ -194,9 +210,4 @@ You can also [open an issue on Github](https://github.com/djavan-bertrand/JCVD/i
 
 Here is a list of known TODOs. If you think an improvement is missing, feel free to [open an issue](https://github.com/djavan-bertrand/JCVD/issues/new).
 
-* Improve documentation
-* Use `@RequiresPermission` on the addFence functions of the StorableFenceManager
-* Use Awareness API enums directly
-* Add HeadphonesFence support
-* Improve tests
 * Improve demo
