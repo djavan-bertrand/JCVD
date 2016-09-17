@@ -15,9 +15,18 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 
-public class StorableActivityFence extends StorableFence {
+/**
+ * A storable fence that backs up a {@link DetectedActivityFence}.
+ * This fence will be true when one of the given activity in the list of changes to the expected
+ * state.
+ *
+ * You can get the list of activities with {@link StorableActivityFence#getActivityTypes()}.
+ * You can get the expected state with {@link StorableActivityFence#getTransitionType()}.
+ * Note: Fence is momentarily TRUE for about 5 seconds on the state change,
+ * then automatically revert to FALSE.
+ */
+public final class StorableActivityFence extends StorableFence {
 
-    // TODO: do not use this enum, use DetectedActivityFence statics
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({DetectedActivityFence.IN_VEHICLE, DetectedActivityFence.ON_BICYCLE,
             DetectedActivityFence.ON_FOOT, DetectedActivityFence.STILL,
@@ -28,8 +37,24 @@ public class StorableActivityFence extends StorableFence {
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({START_TYPE, STOP_TYPE, DURING_TYPE})
     public @interface TransitionType {}
+
+    /**
+     * With this transition, the fence is momentarily (about 5 seconds) TRUE when the user begins
+     * to engage in one of the activityTypes and the previous activity was not one of the values in
+     * activityTypes.
+     */
     public static final int START_TYPE = 0;
+
+    /**
+     * With this transition, the fence is momentarily (about 5 seconds) TRUE when the user stops
+     * one of the activityTypes, and transitions to an activity that is not in activityTypes.
+     */
     public static final int STOP_TYPE = 1;
+
+    /**
+     * With this transition, the fence is in the TRUE state when the user is currently engaged in
+     * one of the specified activityTypes, and FALSE otherwise.
+     */
     public static final int DURING_TYPE = 2;
 
     @ActivityType
@@ -49,7 +74,7 @@ public class StorableActivityFence extends StorableFence {
 
     @RequiresPermission("com.google.android.gms.permission.ACTIVITY_RECOGNITION")
     @Override
-    public AwarenessFence getAwarenessFence(Context ctx) {
+    AwarenessFence getAwarenessFence(Context ctx) {
         switch (mTransitionType) {
             case DURING_TYPE:
                 return DetectedActivityFence.during(mActivityTypes);
@@ -62,10 +87,21 @@ public class StorableActivityFence extends StorableFence {
     }
 
     //region getters
+    /**
+     * Get the list of activity types concerned by this fence.
+     * @return an array of activities
+     * @see {@link ActivityType}
+     */
     public int[] getActivityTypes() {
         return mActivityTypes;
     }
 
+    /**
+     * Get the transition type of the fence
+     * @return the transition type
+     * @see {@link TransitionType}
+     */
+    @TransitionType
     public int getTransitionType() {
         return mTransitionType;
     }

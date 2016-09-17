@@ -16,7 +16,17 @@ import org.json.JSONObject;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class StorableLocationFence extends StorableFence {
+/**
+ * A storable fence that backs up a {@link LocationFence}.
+ * This fence will be true when the phone enters/exits/stay in the given location.
+ *
+ * You can get the type of transition with {@link StorableLocationFence#getTransitionType()}
+ * You can get the latitude with {@link StorableLocationFence#getLatitude()}.
+ * You can get the longitude with {@link StorableLocationFence#getLongitude()}.
+ * You can get the radius with {@link StorableLocationFence#getRadius()}.
+ * You can get the dwell time with {@link StorableLocationFence#getDwellTimeMillis()}.
+ */
+public final class StorableLocationFence extends StorableFence {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({ENTER_TYPE, EXIT_TYPE, IN_TYPE})
@@ -69,22 +79,46 @@ public class StorableLocationFence extends StorableFence {
     }
 
     //region getters
+
+    /**
+     * Get the latitude of the fence.
+     * @return the latitude
+     */
     public double getLatitude() {
         return mLatitude;
     }
 
+    /**
+     * Get the longitude of the fence.
+     * @return the longitude
+     */
     public double getLongitude() {
         return mLongitude;
     }
 
+    /**
+     * Get the radius of the fence.
+     * @return the radius in meters
+     */
     public double getRadius() {
         return mRadius;
     }
 
+    /**
+     * Get the dwell time.
+     * Only used when transition type is {@link #IN_TYPE}.
+     * @return dwell time in milliseconds
+     */
     public long getDwellTimeMillis() {
         return mDwellTimeMillis;
     }
 
+    /**
+     * Get the transition type.
+     * @return the transition type
+     * @see {@link TransitionType}
+     */
+    @StorableActivityFence.TransitionType
     public int getTransitionType() {
         return mTransitionType;
     }

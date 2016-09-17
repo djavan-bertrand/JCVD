@@ -14,19 +14,82 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
 
-public class StorableTimeFence extends StorableFence {
+/**
+ * A storable fence that backs up a {@link TimeFence}.
+ * This fence will be true during the given time frame.
+ *
+ * You can get the type of timing with {@link StorableTimeFence#getTimingType()}
+ * You can get the time zone used with {@link StorableTimeFence#getTimeZone()} ()}.
+ * You can get the start time with {@link StorableTimeFence#getStartTime()} ()}.
+ * You can get the stop time with {@link StorableTimeFence#getStopTime()}.
+ */
+public final class StorableTimeFence extends StorableFence {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({ABSOLUTE, DAILY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY})
     public @interface TimingType {}
+
+    /**
+     * With this type, the fence is in the TRUE state when the current time is within the absolute
+     * times indicated by {@link StorableTimeFence#getStartTime()} and
+     * {@link StorableTimeFence#getStopTime()}.
+     */
     public static final int ABSOLUTE = 0;
+
+    /**
+     * With this type, the fence is in the TRUE state during the interval specified by
+     * {@link StorableTimeFence#getStartTime()} as a startTimeOfDayMillis and
+     * {@link StorableTimeFence#getStopTime()} as a stopTimeOfDayMillis in the given timeZone.
+     */
     public static final int DAILY = 1;
+
+    /**
+     * With this type, the fence is in the TRUE state for Monday in the interval specified by
+     * {@link StorableTimeFence#getStartTime()} as a startTimeOfDayMillis and
+     * {@link StorableTimeFence#getStopTime()} as a stopTimeOfDayMillis in the given timeZone.
+     */
     public static final int MONDAY = 2;
+
+    /**
+     * With this type, the fence is in the TRUE state for Tuesday in the interval specified by
+     * {@link StorableTimeFence#getStartTime()} as a startTimeOfDayMillis and
+     * {@link StorableTimeFence#getStopTime()} as a stopTimeOfDayMillis in the given timeZone.
+     */
     public static final int TUESDAY = 3;
+
+    /**
+     * With this type, the fence is in the TRUE state for Wednesday in the interval specified by
+     * {@link StorableTimeFence#getStartTime()} as a startTimeOfDayMillis and
+     * {@link StorableTimeFence#getStopTime()} as a stopTimeOfDayMillis in the given timeZone.
+     */
     public static final int WEDNESDAY = 4;
+
+    /**
+     * With this type, the fence is in the TRUE state for Thursday in the interval specified by
+     * {@link StorableTimeFence#getStartTime()} as a startTimeOfDayMillis and
+     * {@link StorableTimeFence#getStopTime()} as a stopTimeOfDayMillis in the given timeZone.
+     */
     public static final int THURSDAY = 5;
+
+    /**
+     * With this type, the fence is in the TRUE state for Friday in the interval specified by
+     * {@link StorableTimeFence#getStartTime()} as a startTimeOfDayMillis and
+     * {@link StorableTimeFence#getStopTime()} as a stopTimeOfDayMillis in the given timeZone.
+     */
     public static final int FRIDAY = 7;
+
+    /**
+     * With this type, the fence is in the TRUE state for Saturday in the interval specified by
+     * {@link StorableTimeFence#getStartTime()} as a startTimeOfDayMillis and
+     * {@link StorableTimeFence#getStopTime()} as a stopTimeOfDayMillis in the given timeZone.
+     */
     public static final int SATURDAY = 8;
+
+    /**
+     * With this type, the fence is in the TRUE state for Sunday in the interval specified by
+     * {@link StorableTimeFence#getStartTime()} as a startTimeOfDayMillis and
+     * {@link StorableTimeFence#getStopTime()} as a stopTimeOfDayMillis in the given timeZone.
+     */
     public static final int SUNDAY = 9;
 
     @TimingType
@@ -78,18 +141,37 @@ public class StorableTimeFence extends StorableFence {
     }
 
     //region getters
+
+    /**
+     * Get the timing type
+     * @return the timing type
+     * @see {@link TimingType}
+     */
+    @TimingType
     public int getTimingType() {
         return mTimingType;
     }
 
+    /**
+     * Get the time zone used to understand the start and stop times
+     * @return the timezone
+     */
     public TimeZone getTimeZone() {
         return mTimeZone;
     }
 
+    /**
+     * Get the start time
+     * @return the start time in milliseconds
+     */
     public long getStartTime() {
         return mStartTime;
     }
 
+    /**
+     * Get the stop time
+     * @return the stop time in milliseconds
+     */
     public long getStopTime() {
         return mStopTime;
     }

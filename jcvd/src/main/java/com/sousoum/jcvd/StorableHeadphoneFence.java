@@ -12,13 +12,37 @@ import org.json.JSONObject;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class StorableHeadphoneFence extends StorableFence {
+/**
+ * A storable fence that backs up a {@link HeadphoneFence}.
+ * This fence will be true when the phone detects a plugging/unplugging of the headphones or when
+ * they are in specified state.
+ *
+ * You can get the expected state with {@link StorableHeadphoneFence#getHeadphoneState()}.
+ * Note: Fence is momentarily TRUE for about 5 seconds on the state change,
+ * then automatically revert to FALSE.
+ */
+public final class StorableHeadphoneFence extends StorableFence {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({STATE, PLUGGING_IN, UNPLUGGING})
     public @interface TriggerType {}
+
+    /**
+     * With this type, the fence is TRUE when the headphones are in the specified state.
+     * @see {@link StorableHeadphoneFence#getHeadphoneState()}.
+     */
     public static final int STATE = 0;
+
+    /**
+     * With this transition, the fence is momentarily (about 5 seconds) TRUE when the headphones
+     * are plugged in.
+     */
     public static final int PLUGGING_IN = 1;
+
+    /**
+     * With this transition, the fence is momentarily (about 5 seconds) TRUE when the headphones
+     * are unplugged.
+     */
     public static final int UNPLUGGING = 2;
 
     @TriggerType

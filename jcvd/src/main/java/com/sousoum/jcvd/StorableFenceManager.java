@@ -284,6 +284,7 @@ public class StorableFenceManager {
                 // since the operation is successful, remove from the local store
                 mSyncedStore.storeFence(mFence);
 
+                // id could not be null here as we have added the fence to the store
                 mToAddStore.removeFence(mFence.getId());
             } else {
                 Log.e(TAG, "Error : fence not added. Error is " + status.getStatusMessage() + "(code : " + status.getStatusCode() + ")");

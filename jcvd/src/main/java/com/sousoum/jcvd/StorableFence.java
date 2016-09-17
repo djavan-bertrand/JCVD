@@ -19,7 +19,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * A fence that can be locally stored.
+ * A storable fence that backs up a {@link AwarenessFence}.
+ * It is from this class that {@link StorableActivityFence}, {@link StorableTimeFence},
+ * {@link StorableHeadphoneFence} and {@link StorableLocationFence} inherit.
+ * The instances of this class are meta fences: they are a and, or or not of a fence.
  */
 public class StorableFence {
     /** Type of the fence. */
