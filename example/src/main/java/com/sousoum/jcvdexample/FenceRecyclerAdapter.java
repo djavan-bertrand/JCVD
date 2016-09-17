@@ -232,7 +232,8 @@ public class FenceRecyclerAdapter extends RecyclerView.Adapter<FenceRecyclerAdap
 
             @Override
             public void onClick(View v) {
-                mFenceManager.getFenceState(mFence);
+                //TODO; get the state of the fence
+                //mFenceManager.getFenceState(mFence);
             }
         };
     }

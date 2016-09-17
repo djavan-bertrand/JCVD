@@ -10,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,13 +99,9 @@ public class FenceChooserActivity extends AppCompatActivity implements OnMapRead
                         resultFence = activityFence;
                     }
                     if (resultFence != null) {
-                        boolean addedOnGoing = false;
                         if (ContextCompat.checkSelfPermission(FenceChooserActivity.this,
                                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                            addedOnGoing = mGeofenceManager.addFence(UUID.randomUUID().toString(), resultFence, null, CustomTransitionsIntentService.class.getName());
-                        }
-                        if (!addedOnGoing) {
-                            Log.e(TAG, "Addition of fence has been refused " + resultFence);
+                            mGeofenceManager.addFence(UUID.randomUUID().toString(), resultFence, null, CustomTransitionsIntentService.class.getName());
                         }
                     }
                 }
