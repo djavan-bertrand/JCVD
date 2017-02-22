@@ -4,7 +4,8 @@ jdk: oraclejdk8
 
 env:
   matrix:
-    - ANDROID_TARGET=android-25 ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-15
+    - ANDROID_ABI=armeabi-v7a
 
 android:
   components:
@@ -12,7 +13,7 @@ android:
     - build-tools-25.0.2
     - android-25
         
-    - sys-img-armeabi-v7a-android-25
+    - sys-img-${ANDROID_ABI}-${ANDROID_TARGET}
     
     # Additional components
     - extra-android-m2repository
