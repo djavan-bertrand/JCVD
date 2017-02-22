@@ -31,3 +31,6 @@ script:
   - echo "Travis branch is $TRAVIS_BRANCH"
   - echo "Travis branch is in pull request $TRAVIS_PULL+REQUEST"
   - ./gradlew assembleDebug
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
