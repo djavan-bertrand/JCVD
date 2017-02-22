@@ -29,7 +29,6 @@ before_install:
   - echo "bintray.user=fake_user" >> local.properties
 
 script:
-  - ./gradlew build jacocoTestReport assembleAndroidTest
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
