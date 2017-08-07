@@ -1,4 +1,5 @@
-[![Release](https://img.shields.io/github/tag/djavan-bertrand/JCVD.svg?label=Jitpack)](https://jitpack.io/#djavan-bertrand/JCVD)
+[![Bintray Release](https://api.bintray.com/packages/djavan/maven/com.sousoum%3Ajcvd/images/download.svg) ](https://bintray.com/djavan/maven/com.sousoum%3Ajcvd/_latestVersion)
+[![Jitpack Release](https://jitpack.io/v/djavan-bertrand/JCVD.svg)](https://jitpack.io/#djavan-bertrand/JCVD)
 [![Build Status](https://travis-ci.org/djavan-bertrand/JCVD.svg?branch=master)](https://travis-ci.org/djavan-bertrand/JCVD)
 [![codecov](https://codecov.io/gh/djavan-bertrand/JCVD/branch/master/graph/badge.svg)](https://codecov.io/gh/djavan-bertrand/JCVD)
 
