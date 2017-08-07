@@ -34,10 +34,10 @@
 
         <meta-data
             android:name="com.google.android.awareness.API_KEY"
-            android:value="REPLACE_WITH_YOUR_API_KEY"/>
+            android:value="AIzaSyCMYpxd1jl8j3lzS7krIwG0VXLo5Zsy940"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="REPLACE_WITH_YOUR_API_KEY"/>
+            android:value="AIzaSyCMYpxd1jl8j3lzS7krIwG0VXLo5Zsy940"/>
 
     </application>
 

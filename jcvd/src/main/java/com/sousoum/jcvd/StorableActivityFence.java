@@ -30,8 +30,8 @@ public final class StorableActivityFence extends StorableFence {
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({DetectedActivityFence.IN_VEHICLE, DetectedActivityFence.ON_BICYCLE,
             DetectedActivityFence.ON_FOOT, DetectedActivityFence.STILL,
-            DetectedActivityFence.UNKNOWN, DetectedActivityFence.TILTING,
-            DetectedActivityFence.WALKING, DetectedActivityFence.RUNNING})
+            DetectedActivityFence.UNKNOWN, DetectedActivityFence.WALKING,
+            DetectedActivityFence.RUNNING})
     public @interface ActivityType {}
 
     @Retention(RetentionPolicy.SOURCE)

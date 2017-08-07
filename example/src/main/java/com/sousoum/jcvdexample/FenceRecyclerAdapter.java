@@ -154,9 +154,6 @@ public class FenceRecyclerAdapter extends RecyclerView.Adapter<FenceRecyclerAdap
                             case DetectedActivityFence.STILL:
                                 str += "STILL";
                                 break;
-                            case DetectedActivityFence.TILTING:
-                                str += "TILTING";
-                                break;
                             case DetectedActivityFence.WALKING:
                                 str += "WALKING";
                                 break;
