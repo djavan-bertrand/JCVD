@@ -5,6 +5,7 @@ local.properties
 .idea/vcs.xml
 .idea/dictionaries/
 .idea/runConfigurations.xml
+.idea/misc.xml
 .DS_Store
 build/
 *.iml
