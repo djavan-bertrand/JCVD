@@ -285,6 +285,7 @@ public class StorableFenceManager {
                 mSyncedStore.storeFence(mFence);
 
                 // id could not be null here as we have added the fence to the store
+                assert mFence.getId() != null;
                 mToAddStore.removeFence(mFence.getId());
             } else {
                 Log.e(TAG, "Error : fence not added. Error is " + status.getStatusMessage() + "(code : " + status.getStatusCode() + ")");

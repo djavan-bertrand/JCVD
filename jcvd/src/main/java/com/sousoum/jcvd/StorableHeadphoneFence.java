@@ -29,7 +29,7 @@ public final class StorableHeadphoneFence extends StorableFence {
 
     /**
      * With this type, the fence is TRUE when the headphones are in the specified state.
-     * @see {@link StorableHeadphoneFence#getHeadphoneState()}.
+     * @see StorableHeadphoneFence#getHeadphoneState() to get the state.
      */
     public static final int STATE = 0;
 
@@ -92,7 +92,7 @@ public final class StorableHeadphoneFence extends StorableFence {
     /**
      * Gets the trigger type of the fence
      * @return the type
-     * @see {@link TriggerType}
+     * @see TriggerType
      */
     @TriggerType
     public int getTriggerType() {
@@ -103,7 +103,7 @@ public final class StorableHeadphoneFence extends StorableFence {
      * Gets the headphone state required so that the fence is true
      * Only valid if the trigger type is {@link StorableHeadphoneFence#STATE}
      * @return the headphone state
-     * @see {@link TriggerType}
+     * @see TriggerType
      */
     public int getHeadphoneState() {
         return mHeadphoneState;

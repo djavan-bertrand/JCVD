@@ -116,7 +116,7 @@ public final class StorableLocationFence extends StorableFence {
     /**
      * Get the transition type.
      * @return the transition type
-     * @see {@link TransitionType}
+     * @see TransitionType
      */
     @StorableActivityFence.TransitionType
     public int getTransitionType() {
