@@ -34,7 +34,7 @@ Simply add the dependency to the jcvd library in the build.gradle.
 ```
 dependencies {
     // ...
-    compile 'com.sousoum:jcvd:1.0.0'
+    compile 'com.sousoum:jcvd:1.1.0'
 }
 ```
 
@@ -54,7 +54,7 @@ Then add the dependency to the jcvd library in the build.gradle.
 ```
 dependencies {
     // ...
-    compile 'com.github.djavan-bertrand:JCVD:1.0.0'
+    compile 'com.github.djavan-bertrand:JCVD:1.1.0'
 }
 ```
 
@@ -137,7 +137,15 @@ StorableTimeFence.inDailyInterval((TimeZone)timeZone, (long)startTimeOfDayMillis
 ```
 or
 ```
-StorableTimeFence.inMondayInterval((TimeZone)timeZone, (long)startTimeOfDayMillis, (long)stopTimeOfDayMillis);
+StorableTimeFence.inIntervalOfDay(TimeFence.DAY_OF_WEEK_MONDAY, (TimeZone)timeZone, (long)startTimeOfDayMillis, (long)stopTimeOfDayMillis);
+```
+or
+```
+StorableTimeFence.inTimeInterval(TimeFence.TIME_INTERVAL_WEEKDAY);
+```
+or
+```
+StorableTimeFence.aroundTimeInstant(TimeFence.TIME_INSTANT_SUNRISE, (long)startOffsetMillis, (long)stopOffsetMillis);
 ```
 
 #### Headphone fence
@@ -213,3 +221,4 @@ You can also [open an issue on Github](https://github.com/djavan-bertrand/JCVD/i
 Here is a list of known TODOs. If you think an improvement is missing, feel free to [open an issue](https://github.com/djavan-bertrand/JCVD/issues/new).
 
 * Improve demo
+* Support BeaconFence
