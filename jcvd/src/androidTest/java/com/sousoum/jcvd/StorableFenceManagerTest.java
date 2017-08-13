@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.test.mock.MockContext;
 
 import com.google.android.gms.awareness.fence.AwarenessFence;
+import com.google.android.gms.awareness.state.HeadphoneState;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
@@ -20,7 +21,13 @@ import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
@@ -301,6 +308,75 @@ public class StorableFenceManagerTest extends TestCase {
         assertThat(mManager.mToRemoveStore.getAllFenceIds().size(), is(1));
         assertThat(mManager.mToRemoveStore.getAllFenceIds().contains("fenceId"), is(true));
         assertThat(mManager.getFence("fenceId"), is(fence));
+    }
+
+    @Test
+    public void testSynchronizeAll() {
+        // start with multiple already added fences
+        mMockGapiFenceManager.isConnected = true;
+        StorableFence fence1 = StorableHeadphoneFence.pluggingIn();
+        mManager.addFence("fenceId1", fence1, "");
+        ResultCallback<Status> addResult = mMockGapiFenceManager.addResultDict.get("fenceId1");
+        addResult.onResult(new Status(CommonStatusCodes.SUCCESS));
+        StorableFence fence2 = StorableHeadphoneFence.unplugging();
+        mManager.addFence("fenceId2", fence2, "");
+        addResult = mMockGapiFenceManager.addResultDict.get("fenceId2");
+        addResult.onResult(new Status(CommonStatusCodes.SUCCESS));
+
+        assertThat(mAddedCalls, is(2));
+        assertThat(mRemovedCalls, is(0));
+        assertThat(mManager.mToAddStore.getAllFences(), empty());
+        assertThat(mManager.mSyncedStore.getAllFences().size(), is(2));
+        assertThat(mManager.mToRemoveStore.getAllFences(), empty());
+
+        // disconnect to add non-committed fences
+        mMockGapiFenceManager.isConnected = false;
+        mManager.removeFence("fenceId1");
+        StorableFence fence3 = StorableHeadphoneFence.during(HeadphoneState.PLUGGED_IN);
+        mManager.addFence("fenceId3", fence3, "");
+
+        // ask to synchronize all
+        mManager.synchronizeAllToGoogleApi();
+
+        // when the gapi is connected:
+        // 1: existing fences should have been re-submitted (without statuses)
+        // 2: perform non-committed actions
+        mMockGapiFenceManager.setIsConnected();
+        assertThat(mAddedCalls, is(2));
+        assertThat(mRemovedCalls, is(0));
+        // check that, even if the status are not set, calls to add existing fences is correctly
+        // made
+        assertThat(mMockGapiFenceManager.addResultDict, allOf(
+                hasEntry("fenceId1", null),
+                hasEntry("fenceId2", null)));
+        // check that non-committed remove and add have been called
+        assertThat(mMockGapiFenceManager.removeResultDict, hasKey("fenceId1"));
+        assertThat(mMockGapiFenceManager.addResultDict, hasKey("fenceId3"));
+        assertThat(mManager.mToAddStore.getAllFences(), hasSize(1));
+        assertThat(mManager.mToAddStore.getAllFences(), contains(fence3));
+
+        assertThat(mManager.mSyncedStore.getAllFences(), hasSize(2));
+        assertThat(mManager.mSyncedStore.getAllFences(), containsInAnyOrder(fence1, fence2));
+
+        assertThat(mManager.mToRemoveStore.getAllFenceIds(), hasSize(1));
+        assertThat(mManager.mToRemoveStore.getAllFenceIds(), contains("fenceId1"));
+        assertThat(mManager.getFence("fenceId1"), is(fence1));
+        assertThat(mManager.getFence("fenceId2"), is(fence2));
+        assertThat(mManager.getFence("fenceId3"), nullValue());
+
+        ResultCallback<Status> result = mMockGapiFenceManager.removeResultDict.get("fenceId1");
+        result.onResult(new Status(CommonStatusCodes.SUCCESS));
+        result = mMockGapiFenceManager.addResultDict.get("fenceId3");
+        result.onResult(new Status(CommonStatusCodes.SUCCESS));
+        assertThat(mAddedCalls, is(3));
+        assertThat(mRemovedCalls, is(1));
+        assertThat(mManager.mToAddStore.getAllFences(), empty());
+        assertThat(mManager.mSyncedStore.getAllFences(), hasSize(2));
+        assertThat(mManager.mSyncedStore.getAllFences(), containsInAnyOrder(fence2, fence3));
+        assertThat(mManager.mToRemoveStore.getAllFenceIds(), empty());
+        assertThat(mManager.getFence("fenceId1"), nullValue());
+        assertThat(mManager.getFence("fenceId2"), is(fence2));
+        assertThat(mManager.getFence("fenceId3"), is(fence3));
     }
 
     private final MockSharedPreferences mPref = new MockSharedPreferences();

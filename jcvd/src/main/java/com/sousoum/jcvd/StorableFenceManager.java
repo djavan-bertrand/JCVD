@@ -59,6 +59,12 @@ public class StorableFenceManager {
     private final GapiFenceManager mGapiFenceManager;
 
     /**
+     * True if all fences should be synchronized on Gapi connection, false if only non-committed
+     * ones should be.
+     */
+    private boolean mShouldSynchronizeAll;
+
+    /**
      * Constructor.
      *
      * @param context a context
@@ -149,13 +155,17 @@ public class StorableFenceManager {
     }
 
     /**
-     * Ask to synchronize all stored fences to the Google API Client
+     * Resynchronize all fences to the Google API Client.
+     * This means that the already stored fences will be re-submitted and that the
+     * {@link StorableFenceManager#synchronizeNonCommittedFencesToGoogleApi()} function will be
+     * called.
      */
-    private void synchronizeAllFencesToGoogleApi() {
-        Log.i(TAG, "Try to update list of fences");
+    @VisibleForTesting(otherwise=VisibleForTesting.PACKAGE_PRIVATE)
+    public void synchronizeAllToGoogleApi() {
+        mShouldSynchronizeAll = true;
         if (mGapiFenceManager.isConnected()) {
-            //TODO: see if this part is really needed
-            /*// first, add all (already) stored fences, without listener
+            Log.i(TAG, "Resynchronize all fences");
+            // first, add all (already) stored fences, without listener
             ArrayList<StorableFence> storedFences = mSyncedStore.getAllFences();
             if (!storedFences.isEmpty()) {
                 // for each fence, add it to the Google API Client
@@ -168,8 +178,24 @@ public class StorableFenceManager {
                     Log.i(TAG, "Added " + storableFence);
                 }
                 Log.i(TAG, "All already stored fences have been submitted to be synchronized with Google API Client");
-            }*/
+            }
+            mShouldSynchronizeAll = false;
 
+            // then synchronize non-committed fences
+            synchronizeNonCommittedFencesToGoogleApi();
+        } else {
+            mGapiFenceManager.connect();
+        }
+    }
+
+    /**
+     * Ask to synchronize all non committed changes to the Google API Client
+     * (i.e. add the fences that are in the toAddStore and remove the fences that are in the
+     * toRemoveStore)
+     */
+    private void synchronizeNonCommittedFencesToGoogleApi() {
+        if (mGapiFenceManager.isConnected()) {
+            Log.i(TAG, "Synchronize non-commited fences");
             // add all fences from the to add list
             ArrayList<StorableFence> toAddFences = mToAddStore.getAllFences();
             if (!toAddFences.isEmpty()) {
@@ -304,7 +330,11 @@ public class StorableFenceManager {
 
         @Override
         public void onConnected() {
-            synchronizeAllFencesToGoogleApi();
+            if (mShouldSynchronizeAll) {
+                synchronizeAllToGoogleApi();
+            } else {
+                synchronizeNonCommittedFencesToGoogleApi();
+            }
         }
     };
 }
