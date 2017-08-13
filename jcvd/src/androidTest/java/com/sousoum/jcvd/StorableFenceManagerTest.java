@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.test.mock.MockContext;
 
 import com.google.android.gms.awareness.fence.AwarenessFence;
+import com.google.android.gms.awareness.fence.TimeFence;
 import com.google.android.gms.awareness.state.HeadphoneState;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -108,7 +109,7 @@ public class StorableFenceManagerTest extends TestCase {
     @Test
     public void testAddSucceedWhenConnected() {
         mMockGapiFenceManager.isConnected = true;
-        StorableFence fence = StorableHeadphoneFence.pluggingIn();
+        StorableFence fence = StorableHeadphoneFence.during(HeadphoneState.PLUGGED_IN);
         mManager.addFence("fenceId", fence, "");
 
         // when the gapi is connected, the fence should be added to the gapi
@@ -139,7 +140,7 @@ public class StorableFenceManagerTest extends TestCase {
     @Test
     public void testAddFailsWhenConnected() {
         mMockGapiFenceManager.isConnected = true;
-        StorableFence fence = StorableHeadphoneFence.pluggingIn();
+        StorableFence fence = StorableHeadphoneFence.unplugging();
         mManager.addFence("fenceId", fence, "");
 
         // when the gapi is connected, the fence should be added to the gapi
@@ -227,7 +228,7 @@ public class StorableFenceManagerTest extends TestCase {
     public void testRemoveSucceedWhenConnected() {
         // start with an already added fence
         mMockGapiFenceManager.isConnected = true;
-        StorableFence fence = StorableHeadphoneFence.pluggingIn();
+        StorableFence fence = StorableTimeFence.inDailyInterval(null, 0, 1);
         mManager.addFence("fenceId", fence, "");
         ResultCallback<Status> addResult = mMockGapiFenceManager.addResultDict.get("fenceId");
         addResult.onResult(new Status(CommonStatusCodes.SUCCESS));
@@ -271,7 +272,7 @@ public class StorableFenceManagerTest extends TestCase {
     public void testRemoveFailsWhenConnected() {
         // start with an already added fence
         mMockGapiFenceManager.isConnected = true;
-        StorableFence fence = StorableHeadphoneFence.pluggingIn();
+        StorableFence fence = StorableTimeFence.inIntervalOfDay(TimeFence.DAY_OF_WEEK_SUNDAY, null, 0, 1);
         mManager.addFence("fenceId", fence, "");
         ResultCallback<Status> addResult = mMockGapiFenceManager.addResultDict.get("fenceId");
         addResult.onResult(new Status(CommonStatusCodes.SUCCESS));
@@ -314,11 +315,11 @@ public class StorableFenceManagerTest extends TestCase {
     public void testSynchronizeAll() {
         // start with multiple already added fences
         mMockGapiFenceManager.isConnected = true;
-        StorableFence fence1 = StorableHeadphoneFence.pluggingIn();
+        StorableFence fence1 = StorableTimeFence.aroundTimeInstant(TimeFence.TIME_INSTANT_SUNRISE, 0, 1);
         mManager.addFence("fenceId1", fence1, "");
         ResultCallback<Status> addResult = mMockGapiFenceManager.addResultDict.get("fenceId1");
         addResult.onResult(new Status(CommonStatusCodes.SUCCESS));
-        StorableFence fence2 = StorableHeadphoneFence.unplugging();
+        StorableFence fence2 = StorableTimeFence.inDailyInterval(null, 0, 1);
         mManager.addFence("fenceId2", fence2, "");
         addResult = mMockGapiFenceManager.addResultDict.get("fenceId2");
         addResult.onResult(new Status(CommonStatusCodes.SUCCESS));
@@ -332,7 +333,7 @@ public class StorableFenceManagerTest extends TestCase {
         // disconnect to add non-committed fences
         mMockGapiFenceManager.isConnected = false;
         mManager.removeFence("fenceId1");
-        StorableFence fence3 = StorableHeadphoneFence.during(HeadphoneState.PLUGGED_IN);
+        StorableFence fence3 = StorableTimeFence.inInterval(0, 1);
         mManager.addFence("fenceId3", fence3, "");
 
         // ask to synchronize all

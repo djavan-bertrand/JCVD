@@ -1,5 +1,7 @@
 package com.sousoum.jcvd;
 
+import com.google.android.gms.awareness.fence.TimeFence;
+
 import junit.framework.TestCase;
 
 import org.json.JSONObject;
@@ -147,10 +149,17 @@ public class StorableTimeFenceTest extends TestCase {
         StorableTimeFence fence3 = StorableTimeFence.inIntervalOfDay(DAY_OF_WEEK_MONDAY, mTimeZone, 20, 300);
         StorableTimeFence fence4 = StorableTimeFence.inIntervalOfDay(DAY_OF_WEEK_MONDAY, mTimeZone, 20, 300);
         StorableTimeFence fence5 = StorableTimeFence.inIntervalOfDay(DAY_OF_WEEK_MONDAY, new SimpleTimeZone(3, "1"), 20, 400);
+        StorableTimeFence fence6 = StorableTimeFence.aroundTimeInstant(TimeFence.TIME_INSTANT_SUNRISE, 0, 1);
+        StorableTimeFence fence7 = StorableTimeFence.aroundTimeInstant(TimeFence.TIME_INSTANT_SUNRISE, 0, 1);
+        StorableTimeFence fence8 = StorableTimeFence.inTimeInterval(TIME_INTERVAL_AFTERNOON);
+        StorableTimeFence fence9 = StorableTimeFence.inTimeInterval(TimeFence.TIME_INTERVAL_WEEKDAY);
 
         assertThat(fence1.equals(fence1), is(true));
         assertThat(fence3.equals(fence4), is(true));
         assertThat(fence2.equals(null), is(false));
         assertThat(fence4.equals(fence5), is(false));
+        assertThat(fence5.equals(fence6), is(false));
+        assertThat(fence6.equals(fence7), is(true));
+        assertThat(fence8.equals(fence9), is(false));
     }
 }
