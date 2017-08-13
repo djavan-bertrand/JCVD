@@ -181,13 +181,17 @@ public class StorableFence {
             if (!mAndFences.isEmpty()) {
                 List<AwarenessFence> awarenessFences = new ArrayList<>();
                 for (StorableFence subFence : mAndFences) {
-                    awarenessFences.add(subFence.getAwarenessFence(ctx));
+                    if (subFence != null) {
+                        awarenessFences.add(subFence.getAwarenessFence(ctx));
+                    }
                 }
                 return AwarenessFence.and(awarenessFences);
             } else if (!mOrFences.isEmpty()) {
                 List<AwarenessFence> awarenessFences = new ArrayList<>();
                 for (StorableFence subFence : mOrFences) {
-                    awarenessFences.add(subFence.getAwarenessFence(ctx));
+                    if (subFence != null) {
+                        awarenessFences.add(subFence.getAwarenessFence(ctx));
+                    }
                 }
                 return AwarenessFence.or(awarenessFences);
             } else if (mNotFence != null) {
