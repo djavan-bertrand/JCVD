@@ -34,7 +34,7 @@ Simply add the dependency to the jcvd library in the build.gradle.
 ```
 dependencies {
     // ...
-    compile 'com.sousoum:jcvd:1.1.0'
+    compile 'com.sousoum:jcvd:1.2.0'
 }
 ```
 
@@ -54,7 +54,7 @@ Then add the dependency to the jcvd library in the build.gradle.
 ```
 dependencies {
     // ...
-    compile 'com.github.djavan-bertrand:JCVD:1.1.0'
+    compile 'com.github.djavan-bertrand:JCVD:1.2.0'
 }
 ```
 
@@ -64,6 +64,7 @@ Adding this dependency will also add the following permissions to your apk:
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 ```
 
 ## How to use
