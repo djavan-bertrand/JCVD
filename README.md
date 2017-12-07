@@ -34,7 +34,7 @@ Simply add the dependency to the jcvd library in the build.gradle.
 ```
 dependencies {
     // ...
-    compile 'com.sousoum:jcvd:1.3.0'
+    compile 'com.sousoum:jcvd:1.3.1'
 }
 ```
 
@@ -54,7 +54,7 @@ Then add the dependency to the jcvd library in the build.gradle.
 ```
 dependencies {
     // ...
-    compile 'com.github.djavan-bertrand:JCVD:1.3.0'
+    compile 'com.github.djavan-bertrand:JCVD:1.3.1'
 }
 ```
 
