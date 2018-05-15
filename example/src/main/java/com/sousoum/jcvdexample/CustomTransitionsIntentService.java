@@ -42,7 +42,7 @@ public class CustomTransitionsIntentService extends IntentService {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
 
         // Set the notification contents
-        builder.setSmallIcon(com.sousoum.jcvd.R.drawable.default_notif)
+        builder.setSmallIcon(R.drawable.default_notif)
                 .setContentTitle("Custom")
                 .setContentText(text);
 
