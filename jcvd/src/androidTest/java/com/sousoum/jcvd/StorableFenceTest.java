@@ -3,12 +3,9 @@ package com.sousoum.jcvd;
 import com.google.android.gms.awareness.fence.DetectedActivityFence;
 import com.google.android.gms.awareness.state.HeadphoneState;
 
-import junit.framework.TestCase;
-
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 import java.util.TimeZone;
@@ -24,25 +21,17 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
-@RunWith(android.support.test.runner.AndroidJUnit4.class)
-public class StorableFenceTest extends TestCase {
+public class StorableFenceTest {
 
     private StorableActivityFence mAct1;
-
     private StorableActivityFence mAct2;
-
     private StorableLocationFence mLoc1;
-
     private StorableLocationFence mLoc2;
-
     private StorableHeadphoneFence mHead1;
-
     private StorableTimeFence mTime1;
 
     @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
+    public void setUp() {
         mAct1 = StorableActivityFence.starting(DetectedActivityFence.IN_VEHICLE);
         mAct1.setPendingIntentClass("className");
         mAct2 = StorableActivityFence.during(DetectedActivityFence.RUNNING);

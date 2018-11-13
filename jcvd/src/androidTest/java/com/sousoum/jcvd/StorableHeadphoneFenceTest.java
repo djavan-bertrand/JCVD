@@ -2,22 +2,16 @@ package com.sousoum.jcvd;
 
 import com.google.android.gms.awareness.state.HeadphoneState;
 
-import junit.framework.TestCase;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@RunWith(android.support.test.runner.AndroidJUnit4.class)
-public class StorableHeadphoneFenceTest extends TestCase {
+public class StorableHeadphoneFenceTest {
 
     @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
+    public void setUp() {
 
     }
 

@@ -59,12 +59,6 @@ public class StorableFenceManager {
     private final GapiFenceManager mGapiFenceManager;
 
     /**
-     * True if all fences should be synchronized on Gapi connection, false if only non-committed
-     * ones should be.
-     */
-    private boolean mShouldSynchronizeAll;
-
-    /**
      * Constructor.
      *
      * @param context a context
@@ -77,7 +71,7 @@ public class StorableFenceManager {
         mSyncedStore = new FenceStore(context, SYNCED_STORE);
 
         mGapiFenceManager = createGapiFenceManager();
-        mGapiFenceManager.setConnectionListener(mConnectionListener);
+        synchronizeNonCommittedFencesToGoogleApi();
     }
 
     @VisibleForTesting
@@ -162,30 +156,24 @@ public class StorableFenceManager {
      */
     @VisibleForTesting(otherwise=VisibleForTesting.PACKAGE_PRIVATE)
     public void synchronizeAllToGoogleApi() {
-        mShouldSynchronizeAll = true;
-        if (mGapiFenceManager.isConnected()) {
-            Log.i(TAG, "Resynchronize all fences");
-            // first, add all (already) stored fences, without listener
-            ArrayList<StorableFence> storedFences = mSyncedStore.getAllFences();
-            if (!storedFences.isEmpty()) {
-                // for each fence, add it to the Google API Client
-                for (StorableFence storableFence : storedFences) {
-                    if ((storableFence.getId() != null) &&
-                            (storableFence.getPendingIntentClass() != null)) {
-                        mGapiFenceManager.addFence(storableFence.getId(), storableFence.getAwarenessFence(mContext),
-                                storableFence.getPendingIntentClass(), null);
-                    }
-                    Log.i(TAG, "Added " + storableFence);
+        Log.i(TAG, "Resynchronize all fences");
+        // first, add all (already) stored fences, without listener
+        ArrayList<StorableFence> storedFences = mSyncedStore.getAllFences();
+        if (!storedFences.isEmpty()) {
+            // for each fence, add it to the Google API Client
+            for (StorableFence storableFence : storedFences) {
+                if ((storableFence.getId() != null) &&
+                        (storableFence.getPendingIntentClass() != null)) {
+                    mGapiFenceManager.addFence(storableFence.getId(), storableFence.getAwarenessFence(mContext),
+                            storableFence.getPendingIntentClass(), null);
                 }
-                Log.i(TAG, "All already stored fences have been submitted to be synchronized with Google API Client");
+                Log.i(TAG, "Added " + storableFence);
             }
-            mShouldSynchronizeAll = false;
-
-            // then synchronize non-committed fences
-            synchronizeNonCommittedFencesToGoogleApi();
-        } else {
-            mGapiFenceManager.connect();
+            Log.i(TAG, "All already stored fences have been submitted to be synchronized with Google API Client");
         }
+
+        // then synchronize non-committed fences
+        synchronizeNonCommittedFencesToGoogleApi();
     }
 
     /**
@@ -194,40 +182,36 @@ public class StorableFenceManager {
      * toRemoveStore)
      */
     private void synchronizeNonCommittedFencesToGoogleApi() {
-        if (mGapiFenceManager.isConnected()) {
-            Log.i(TAG, "Synchronize non-commited fences");
-            // add all fences from the to add list
-            ArrayList<StorableFence> toAddFences = mToAddStore.getAllFences();
-            if (!toAddFences.isEmpty()) {
-                // for each fence, add it to the Google API Client
-                for (StorableFence storableFence : toAddFences) {
-                    FenceAddStatus addStatus = new FenceAddStatus(storableFence);
+        Log.i(TAG, "Synchronize non-commited fences");
+        // add all fences from the to add list
+        ArrayList<StorableFence> toAddFences = mToAddStore.getAllFences();
+        if (!toAddFences.isEmpty()) {
+            // for each fence, add it to the Google API Client
+            for (StorableFence storableFence : toAddFences) {
+                FenceAddStatus addStatus = new FenceAddStatus(storableFence);
 
-                    if ((storableFence.getId() != null) &&
-                            (storableFence.getPendingIntentClass() != null)) {
-                        mGapiFenceManager.addFence(storableFence.getId(), storableFence.getAwarenessFence(mContext),
-                                storableFence.getPendingIntentClass(), addStatus);
-                    }
-                    Log.i(TAG, "Added " + storableFence);
+                if ((storableFence.getId() != null) &&
+                        (storableFence.getPendingIntentClass() != null)) {
+                    mGapiFenceManager.addFence(storableFence.getId(), storableFence.getAwarenessFence(mContext),
+                            storableFence.getPendingIntentClass(), addStatus);
                 }
-                Log.i(TAG, "All fences to add have been submitted to be synchronized with Google API Client");
+                Log.i(TAG, "Added " + storableFence);
             }
+            Log.i(TAG, "All fences to add have been submitted to be synchronized with Google API Client");
+        }
 
-            // remove all fences from the to remove list
-            Set<String> toRemoveFences = mToRemoveStore.getAllFenceIds();
-            if (!toRemoveFences.isEmpty()) {
-                // TODO: use only one request!
-                // for each fence, remove it to the Google API Client
-                for (String fenceId : toRemoveFences) {
+        // remove all fences from the to remove list
+        Set<String> toRemoveFences = mToRemoveStore.getAllFenceIds();
+        if (!toRemoveFences.isEmpty()) {
+            // TODO: use only one request!
+            // for each fence, remove it to the Google API Client
+            for (String fenceId : toRemoveFences) {
 
-                    FenceRemoveStatus removeStatus = new FenceRemoveStatus(fenceId);
-                    mGapiFenceManager.removeFence(fenceId, removeStatus);
-                    Log.i(TAG, "Removed " + fenceId);
-                }
-                Log.i(TAG, "All fences to remove have been submitted to be synchronized with Google API Client");
+                FenceRemoveStatus removeStatus = new FenceRemoveStatus(fenceId);
+                mGapiFenceManager.removeFence(fenceId, removeStatus);
+                Log.i(TAG, "Removed " + fenceId);
             }
-        } else {
-            mGapiFenceManager.connect();
+            Log.i(TAG, "All fences to remove have been submitted to be synchronized with Google API Client");
         }
     }
 
@@ -323,18 +307,4 @@ public class StorableFenceManager {
         }
     }
     //endregion Result callbacks
-
-    @VisibleForTesting
-    protected final GapiFenceManager.ConnectionListener mConnectionListener =
-            new GapiFenceManager.ConnectionListener() {
-
-        @Override
-        public void onConnected() {
-            if (mShouldSynchronizeAll) {
-                synchronizeAllToGoogleApi();
-            } else {
-                synchronizeNonCommittedFencesToGoogleApi();
-            }
-        }
-    };
 }

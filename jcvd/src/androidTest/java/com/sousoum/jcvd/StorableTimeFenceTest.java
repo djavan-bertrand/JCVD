@@ -2,12 +2,9 @@ package com.sousoum.jcvd;
 
 import com.google.android.gms.awareness.fence.TimeFence;
 
-import junit.framework.TestCase;
-
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
@@ -29,15 +26,12 @@ import static com.sousoum.jcvd.matchers.StorableTimeFenceMatcher.isTimeInterval;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@RunWith(android.support.test.runner.AndroidJUnit4.class)
-public class StorableTimeFenceTest extends TestCase {
+public class StorableTimeFenceTest {
 
     private TimeZone mTimeZone;
 
     @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
+    public void setUp() {
         mTimeZone = TimeZone.getDefault();
     }
 
