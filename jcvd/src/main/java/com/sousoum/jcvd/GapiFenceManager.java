@@ -3,38 +3,24 @@ package com.sousoum.jcvd;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
-import android.util.Log;
 
 import com.google.android.gms.awareness.Awareness;
+import com.google.android.gms.awareness.FenceClient;
 import com.google.android.gms.awareness.fence.AwarenessFence;
 import com.google.android.gms.awareness.fence.FenceUpdateRequest;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 /**
  * Class that manages addition and deletion of Fences in the Google API Client.
  * It uses a store to remember all fences that are currently in the Google API Client.
  * The store is currently backed by the shared preferences
  */
-class GapiFenceManager implements
-        GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
-
-    /**
-     * Google Api Client Connection listener
-     */
-    interface ConnectionListener {
-        /**
-         * Called when the Google Api Client connects.
-         */
-        void onConnected();
-    }
+class GapiFenceManager {
 
     private static final String TAG = "GapiFenceManager";
 
@@ -42,10 +28,7 @@ class GapiFenceManager implements
     private final Context mContext;
 
     @NonNull
-    private final GoogleApiClient mGoogleApiClient;
-
-    @Nullable
-    private ConnectionListener mConnectionListener;
+    private final FenceClient mFenceClient;
 
     /**
      * Constructor.
@@ -55,33 +38,12 @@ class GapiFenceManager implements
     GapiFenceManager(@NonNull Context context) {
         mContext = context;
 
-        mGoogleApiClient = createGapi();
+        mFenceClient = createFenceClient();
     }
 
     @VisibleForTesting
-    protected GoogleApiClient createGapi() {
-        return new GoogleApiClient.Builder(mContext)
-                .addApi(Awareness.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-    }
-
-    void setConnectionListener(@Nullable ConnectionListener connectionListener) {
-        mConnectionListener = connectionListener;
-    }
-
-    /**
-     * Ask for a connection to the Google API Client
-     */
-    void connect() {
-        if (!mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.connect();
-        }
-    }
-
-    boolean isConnected() {
-        return mGoogleApiClient.isConnected();
+    protected FenceClient createFenceClient() {
+        return Awareness.getFenceClient(mContext);
     }
 
     /**
@@ -97,19 +59,23 @@ class GapiFenceManager implements
      * @return true if add has been asked, false otherwise.
      */
     boolean addFence(@NonNull String id, @NonNull AwarenessFence fence,
-                            @NonNull String pendingIntentClassName, ResultCallback<Status> status) {
-        if (mGoogleApiClient.isConnected()) {
-            FenceUpdateRequest.Builder requestBuilder = new FenceUpdateRequest.Builder()
-                    .addFence(id, fence, createRequestPendingIntent(pendingIntentClassName));
+                            @NonNull String pendingIntentClassName, final ResultCallback<Status> status) {
 
-            Awareness.FenceApi.updateFences(mGoogleApiClient, requestBuilder.build())
-                    .setResultCallback(status);
+        FenceUpdateRequest.Builder requestBuilder = new FenceUpdateRequest.Builder()
+                .addFence(id, fence, createRequestPendingIntent(pendingIntentClassName));
 
-            return true;
-        } else {
-            connect();
-            return false;
-        }
+        mFenceClient.updateFences(requestBuilder.build())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            status.onResult(Status.RESULT_SUCCESS);
+                        } else {
+                            status.onResult(Status.RESULT_INTERNAL_ERROR);
+                        }
+                    }
+                });
+        return true;
     }
 
     /**
@@ -118,21 +84,21 @@ class GapiFenceManager implements
      * @param status the status that will be called when the addition fails or succeed.
      * @return true if remove has been asked, false otherwise.
      */
-    boolean removeFence(@NonNull String fenceId, ResultCallback<Status> status) {
+    boolean removeFence(@NonNull String fenceId, final ResultCallback<Status> status) {
+        FenceUpdateRequest.Builder requestBuilder = new FenceUpdateRequest.Builder()
+                .removeFence(fenceId);
 
-        if (mGoogleApiClient.isConnected()) {
-
-            FenceUpdateRequest.Builder requestBuilder = new FenceUpdateRequest.Builder()
-                    .removeFence(fenceId);
-
-            Awareness.FenceApi.updateFences(mGoogleApiClient, requestBuilder.build())
-                    .setResultCallback(status);
-            Log.i(TAG, "Removed " + fenceId);
-            return true;
-        } else {
-            connect();
-            return false;
-        }
+        mFenceClient.updateFences(requestBuilder.build()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    status.onResult(Status.RESULT_SUCCESS);
+                } else {
+                    status.onResult(Status.RESULT_INTERNAL_ERROR);
+                }
+            }
+        });
+        return true;
     }
 
     /**
@@ -161,28 +127,4 @@ class GapiFenceManager implements
         }
         return pendingIntent;
     }
-
-    //region GoogleApiClient.ConnectionCallbacks
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.i(TAG, "GoogleApiClient connected");
-
-        if (mConnectionListener != null) {
-            mConnectionListener.onConnected();
-        }
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.i(TAG, "Google API client onConnectionSuspended");
-    }
-    //endregion GoogleApiClient.ConnectionCallbacks
-
-    //region GoogleApiClient.OnConnectionFailedListener
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.e(TAG, "Connection to Google API client failed with error code :" + connectionResult.getErrorCode());
-    }
-    //endregion GoogleApiClient.OnConnectionFailedListener
 }

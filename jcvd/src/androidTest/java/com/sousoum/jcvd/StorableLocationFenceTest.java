@@ -1,22 +1,16 @@
 package com.sousoum.jcvd;
 
-import junit.framework.TestCase;
-
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static com.sousoum.jcvd.matchers.StorableLocationFenceMatcher.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@RunWith(android.support.test.runner.AndroidJUnit4.class)
-public class StorableLocationFenceTest extends TestCase {
+public class StorableLocationFenceTest {
 
     @Before
-    @Override
-    public void setUp() throws Exception {
-        super.setUp();
+    public void setUp() {
 
     }
 

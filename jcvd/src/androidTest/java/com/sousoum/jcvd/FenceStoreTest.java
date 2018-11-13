@@ -7,11 +7,8 @@ import android.test.mock.MockContext;
 import com.google.android.gms.awareness.fence.DetectedActivityFence;
 import com.sousoum.jcvd.mocks.MockSharedPreferences;
 
-import junit.framework.TestCase;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,8 +19,7 @@ import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-@RunWith(android.support.test.runner.AndroidJUnit4.class)
-public class FenceStoreTest extends TestCase {
+public class FenceStoreTest {
 
     private FenceStore mStore;
 
@@ -37,7 +33,7 @@ public class FenceStoreTest extends TestCase {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mStore = new FenceStore(mContext, "test");
         mAct1 = StorableActivityFence.starting(DetectedActivityFence.IN_VEHICLE);
         mAct2 = StorableActivityFence.during(DetectedActivityFence.RUNNING);
