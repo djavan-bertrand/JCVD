@@ -100,7 +100,7 @@ public class FenceRecyclerAdapter extends RecyclerView.Adapter<FenceRecyclerAdap
         public void setFence(StorableFence fence) {
             mFence = fence;
             boolean hasLocationFence = false;
-            String text = "";
+            String text = fence.getId() + "\n";
             if (!fence.getAndFences().isEmpty()) {
                 for (StorableFence andFence : fence.getAndFences()) {
                     if (!text.isEmpty()) {
