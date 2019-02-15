@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import com.google.android.gms.awareness.Awareness;
@@ -59,7 +60,7 @@ class GapiFenceManager {
      * @return true if add has been asked, false otherwise.
      */
     boolean addFence(@NonNull String id, @NonNull AwarenessFence fence,
-                            @NonNull String pendingIntentClassName, final ResultCallback<Status> status) {
+                            @NonNull String pendingIntentClassName, @Nullable final ResultCallback<Status> status) {
 
         FenceUpdateRequest.Builder requestBuilder = new FenceUpdateRequest.Builder()
                 .addFence(id, fence, createRequestPendingIntent(pendingIntentClassName));
@@ -68,10 +69,12 @@ class GapiFenceManager {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            status.onResult(Status.RESULT_SUCCESS);
-                        } else {
-                            status.onResult(Status.RESULT_INTERNAL_ERROR);
+                        if (status != null) {
+                            if (task.isSuccessful()) {
+                                status.onResult(Status.RESULT_SUCCESS);
+                            } else {
+                                status.onResult(Status.RESULT_INTERNAL_ERROR);
+                            }
                         }
                     }
                 });
